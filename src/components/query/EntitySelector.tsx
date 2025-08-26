@@ -1,50 +1,112 @@
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import {
+  Car,
+  Home,
+  MapPin,
+  Trash2,
+  MoveDown,
+  User
+} from "lucide-react";
 import React from "react";
-import { UserIcon, HomeIcon, MapPinIcon, TruckIcon } from "@heroicons/react/24/solid";
 
 const entityList = [
-  { id: "insan", label: "İnsan", color: "#2563eb", icon: <UserIcon className="w-5 h-5 text-blue-600" /> },
-  { id: "plaka", label: "Plaka", color: "#f59e42", icon: <TruckIcon className="w-5 h-5 text-orange-500" /> },
-  { id: "ev", label: "Ev", color: "#22c55e", icon: <HomeIcon className="w-5 h-5 text-green-500" /> },
-  { id: "konum", label: "Konum", color: "#a21caf", icon: <MapPinIcon className="w-5 h-5 text-purple-700" /> },
+  { id: "insan", label: "İnsan", color: "#2563eb", icon: <User className="w-5 h-5" color="#2563eb" /> },
+  { id: "plaka", label: "Plaka", color: "#f59e42", icon: <Car className="w-5 h-5" color="#f59e42" /> },
+  { id: "ev", label: "Ev", color: "#22c55e", icon: <Home className="w-5 h-5" color="#22c55e" /> },
+  { id: "konum", label: "Konum", color: "#a21caf", icon: <MapPin className="w-5 h-5" color="#a21caf" /> },
 ];
 
 export const EntitySelector: React.FC<{
   onClear?: () => void;
   onLoadSample?: () => void;
 }> = ({ onClear, onLoadSample }) => (
-  <aside className="w-56 bg-white border-r border-gray-200 p-6 flex flex-col gap-4 shadow-md z-10">
-    <div>
-      <h2 className="text-xl font-bold text-gray-800 mb-2">Varlıklar</h2>
-      <p className="text-xs text-gray-500 mb-4">Şemaya sürükleyip bırakın</p>
-    </div>
-    <div className="flex flex-col gap-3 mb-4">
-      {entityList.map((entity) => (
-        <div
-          key={entity.id}
-          draggable
-          onDragStart={(event) => {
-            event.dataTransfer.setData("application/reactflow-label", entity.label);
-            event.dataTransfer.setData("application/reactflow-type", entity.id); // <-- type bilgisini ekle!
-            event.dataTransfer.setData("application/reactflow-color", entity.color);
-          }}
-          className="flex items-center gap-3 px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 hover:bg-blue-50 cursor-grab transition-all shadow-sm"
-        >
-          <span>{entity.icon}</span>
-          <span className="font-medium text-gray-800">{entity.label}</span>
+  <aside
+    className="
+      w-56 min-w-[200px] max-w-xs h-full bg-white border-r border-gray-200
+      flex flex-col z-10
+      md:static fixed left-0 top-0 md:h-full h-[60vh] md:w-56 w-4/5
+      transition-all
+    "
+    style={{ zIndex: 20 }}
+  >
+    <Card className="h-full flex flex-col shadow-none border-none">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-xl">Varlıklar</CardTitle>
+        <p className="text-xs text-muted-foreground">Şemaya sürükleyip bırakın</p>
+      </CardHeader>
+
+      <Separator />
+
+      <CardContent className="flex-1 flex flex-col pt-4 pb-0 px-0">
+        {/* ÜST LİSTE: aynı yatay padding için px-3 */}
+        <ScrollArea className="flex-1">
+          <div className="px-3 flex flex-col gap-2">
+            {entityList.map((entity) => (
+              <Button
+                key={entity.id}
+                draggable
+                onDragStart={(event) => {
+                  event.dataTransfer.setData("application/reactflow-label", entity.label);
+                  event.dataTransfer.setData("application/reactflow-type", entity.id);
+                  event.dataTransfer.setData("application/reactflow-color", entity.color);
+                }}
+                variant="outline"
+                className="
+                  w-full h-10 rounded-lg
+                  px-3 justify-start items-center gap-3
+                  bg-gray-50 hover:bg-blue-50 border-gray-200
+                  shadow-sm cursor-grab active:scale-95 transition
+                "
+                style={{ userSelect: "none" }}
+              >
+                {entity.icon}
+                <span className="font-medium text-gray-800">{entity.label}</span>
+              </Button>
+            ))}
+          </div>
+        </ScrollArea>
+
+        <Separator className="my-4" />
+
+        {/* ALT AKSİYONLAR: üsttekiyle aynı padding, aynı yükseklik, aynı hizalama */}
+        <div className="px-3 flex flex-col gap-2 mb-3">
+          <Button
+            variant="outline"
+            onClick={onLoadSample}
+            className="
+              w-full h-10 rounded-lg
+              px-3 justify-start items-center gap-3
+              bg-gray-50 hover:bg-blue-50 border-gray-200
+              shadow-sm transition flex justify-center items-center"
+          >
+            <MoveDown color="blue" className="w-5 h-5" />
+            <span className="font-medium text-gray-800">Örnek Yükle</span>
+          </Button>
+
+          <Button
+            variant="outline"
+
+            onClick={onClear}
+            className="
+              w-full h-10 rounded-lg
+              px-3 justify-start items-center gap-3
+              bg-gray-50 hover:bg-blue-50 border-gray-200
+              shadow-sm transition flex justify-center items-center
+            "
+          >
+            <Trash2 color="red" className="w-5 h-5" />
+            <span className="font-medium text-gray-800">Sorguyu Temizle</span>
+          </Button>
         </div>
-      ))}
-    </div>
-    <button
-      className="mb-2 px-3 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
-      onClick={onLoadSample}
-    >
-      Örnek Yükle
-    </button>
-    <button
-      className="px-3 py-2 rounded bg-gray-200 text-gray-800 font-semibold hover:bg-gray-300 transition"
-      onClick={onClear}
-    >
-      Sorguyu Temizle
-    </button>
+      </CardContent>
+    </Card>
   </aside>
 );
