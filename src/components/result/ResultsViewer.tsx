@@ -14,16 +14,16 @@ export const ResultsViewer: React.FC<{ data: any; onBack: () => void }> = ({ dat
         {
           selector: "node",
           style: {
-            width: 38,
-            height: 38,
+            width: 28,
+            height: 28,
             "background-color": "#2563eb",
             "border-width": 3,
             "border-color": "#fff",
             "border-opacity": 1,
             "shape": "ellipse",
             label: "data(label)",
-            "font-size": "11px",
-            "font-weight": "600",
+            "font-size": "7px",
+            // "font-weight": "600",
             color: "#fff",
             "text-valign": "center",
             "text-halign": "center",
@@ -32,7 +32,7 @@ export const ResultsViewer: React.FC<{ data: any; onBack: () => void }> = ({ dat
             "overlay-padding": "4px",
             "z-index": 10,
             "transition-property": "background-color, border-color",
-            "transition-duration": "0.2s",
+            // "transition-duration": "0.2s",
           },
         },
         {
@@ -87,12 +87,12 @@ export const ResultsViewer: React.FC<{ data: any; onBack: () => void }> = ({ dat
       <div
         id="cyto-canvas"
         style={{
-          width: "68vw",
-          height: "68vh",
-          background: "#f8fafc",
-          borderRadius: 18,
-          boxShadow: "0 2px 16px 0 rgba(30,41,59,0.10)",
-          border: "1.5px solid #e0e7ef",
+          width: "100vw",
+          height: "100vh",
+          // background: "#f8fafc",
+          // borderRadius: 18,
+          // boxShadow: "0 2px 16px 0 rgba(30,41,59,0.10)",
+          // border: "1.5px solid #e0e7ef",
           marginTop: 32,
         }}
       />

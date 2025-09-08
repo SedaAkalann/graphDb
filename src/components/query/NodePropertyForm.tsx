@@ -20,6 +20,7 @@ export const NodePropertyForm = ({
   onChange: (key: string, value: any) => void;
 }) => {
   const props = entityProperties[nodeType];
+  console.log(props,"PROPS")
   if (!props) return null;
 
   return (

@@ -22,7 +22,8 @@ const entityList = [
   { id: "plaka", label: "Plaka", color: "#f59e42", icon: <Car className="w-5 h-5" color="#f59e42" /> },
   { id: "ev", label: "Ev", color: "#22c55e", icon: <Home className="w-5 h-5" color="#22c55e" /> },
   { id: "konum", label: "Konum", color: "#a21caf", icon: <MapPin className="w-5 h-5" color="#a21caf" /> },
-];
+]; 
+// bu kısım backend'den çekilecek 
 
 export const EntitySelector: React.FC<{
   onClear?: () => void;
@@ -30,7 +31,7 @@ export const EntitySelector: React.FC<{
 }> = ({ onClear, onLoadSample }) => (
   <aside
     className="
-      w-56 min-w-[200px] max-w-xs h-full bg-white border-r border-gray-200
+       min-w-[200px] max-w-xs bg-white border-r border-gray-200
       flex flex-col z-10
       md:static fixed left-0 top-0 md:h-full h-[60vh] md:w-56 w-4/5
       transition-all
@@ -83,7 +84,7 @@ export const EntitySelector: React.FC<{
             onClick={onLoadSample}
             className="
               w-full h-10 rounded-lg
-              px-3 justify-start items-center gap-3
+              px-3  gap-3
               bg-gray-50 hover:bg-blue-50 border-gray-200
               shadow-sm transition flex justify-center items-center"
           >
@@ -97,7 +98,7 @@ export const EntitySelector: React.FC<{
             onClick={onClear}
             className="
               w-full h-10 rounded-lg
-              px-3 justify-start items-center gap-3
+              px-3  gap-3
               bg-gray-50 hover:bg-blue-50 border-gray-200
               shadow-sm transition flex justify-center items-center
             "

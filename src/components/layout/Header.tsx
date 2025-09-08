@@ -15,7 +15,7 @@ export const Header: React.FC = () => {
             <h1 className="text-xl font-bold text-gray-900">Graph Database UI</h1>
           </div>
           
-          <div className="flex items-center space-x-4">
+          {/* <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2 text-sm text-gray-600">
               <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
               <span>Connected</span>
@@ -23,7 +23,7 @@ export const Header: React.FC = () => {
             <button className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
               Settings
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </header>

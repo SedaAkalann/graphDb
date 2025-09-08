@@ -28,6 +28,7 @@ export const QueryBuilder: React.FC<{ onQuery: (data: any) => void }> = ({ onQue
       ],
     };
     onQuery(cytoData);
+    // bu kısım gerçek uygulamada backend'den sonuç verisi çekme işlemi olacak
   };
 
   return (
