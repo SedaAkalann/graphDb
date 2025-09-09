@@ -1,3 +1,4 @@
+import { Search } from "lucide-react";
 import React, { useCallback, useRef, useState } from "react";
 import type { Connection, Edge, Node, ReactFlowInstance } from "reactflow";
 import ReactFlow, {
@@ -9,8 +10,8 @@ import ReactFlow, {
   applyNodeChanges,
 } from "reactflow";
 import "reactflow/dist/style.css";
+import type { RFEdgeData, RFNodeData } from "../../types/types";
 import { EdgeModal } from "./EdgeModal";
-import type { RFEdgeData, RFNodeData } from "./types";
 
 let nodeId = 0;
 const getId = () => `node_${nodeId++}`;
@@ -35,12 +36,14 @@ export const SchemeCanvas = ({
   setNodes,
   setEdges,
   onNodeSelect,
+  onQuery,
 }: {
   nodes: Node<RFNodeData>[];
   edges: Edge<RFEdgeData>[];
   setNodes: React.Dispatch<React.SetStateAction<Node<RFNodeData>[]>>;
   setEdges: React.Dispatch<React.SetStateAction<Edge<RFEdgeData>[]>>;
   onNodeSelect: (node: Node<RFNodeData> | null) => void;
+  onQuery: () => void;
 }) => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] =
@@ -129,7 +132,7 @@ export const SchemeCanvas = ({
 
   // Node seçimi
   const onNodeClick = useCallback(
-    (_: any, node: Node<RFNodeData>) => onNodeSelect(node),
+    (_event: React.MouseEvent, node: Node<RFNodeData>) => onNodeSelect(node),
     [onNodeSelect]
   );
 
@@ -146,6 +149,27 @@ export const SchemeCanvas = ({
         boxShadow: "0 0 24px 0 rgba(30,41,59,0.04)",
       }}
     >
+      {/* Sorgula Butonu - Sağ Üst */}
+      <button
+        onClick={onQuery}
+        className="
+          absolute top-4 right-4 z-30
+          h-12 px-6 rounded-2xl
+          bg-gradient-to-r from-emerald-500 via-blue-500 to-indigo-500
+          hover:from-emerald-600 hover:via-blue-600 hover:to-indigo-600
+          text-white font-bold text-sm
+          shadow-xl hover:shadow-2xl hover:-translate-y-1
+          transition-all duration-300 ease-out
+          flex items-center gap-3
+          active:scale-[0.96] overflow-hidden group
+          border border-emerald-400/50
+        "
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+        <Search className="w-4 h-4 relative z-10 transition-transform group-hover:rotate-12 drop-shadow-sm" />
+        <span className="relative z-10 drop-shadow-sm">Sorgula</span>
+      </button>
+
       <ReactFlow
         nodes={nodes}
         edges={edges}

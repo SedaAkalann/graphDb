@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,20 +6,22 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { Filter, Play } from "lucide-react";
+import { BarChart3, Database, Info, Save, Settings, Target } from "lucide-react";
 import React from "react";
+import type { Edge, Node } from "reactflow";
+import type { RFEdgeData, RFNodeData } from "../../types/types";
 import { NodePropertyForm } from "./NodePropertyForm";
 
 export const PropertyPanel: React.FC<{
-  selectedNode: any;
-  onNodePropertyChange: (key: string, value: any) => void;
+  selectedNode: Node<RFNodeData> | null;
+  onNodePropertyChange: (key: string, value: string | number | boolean) => void;
   resultLimit: number;
   setResultLimit: (v: number) => void;
   queryDepth: number;
   setQueryDepth: (v: number) => void;
-  onQuery: () => void;
-  onFilter?: () => void;
+  onSave?: () => void;
+  nodes?: Node<RFNodeData>[];
+  edges?: Edge<RFEdgeData>[];
 }> = ({
   selectedNode,
   onNodePropertyChange,
@@ -28,116 +29,159 @@ export const PropertyPanel: React.FC<{
   setResultLimit,
   queryDepth,
   setQueryDepth,
-  onQuery,
-  onFilter,
+  onSave,
+  nodes = [],
+  edges = [],
 }) => (
-    <aside
-      className="
-       min-w-[260px] max-w-sm  bg-white border-l border-gray-200
-      flex flex-col z-10
-      md:static fixed right-0 top-0 md:h-full h-[60vh] md:w-80 w-4/5
-      transition-all overflow-y-auto
-    "
-      style={{ zIndex: 20 }}
-    >
-      <Card className="h-full flex flex-col shadow-none border-none">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-xl">Sorgu Özellikleri</CardTitle>
-          <p className="text-xs text-muted-foreground">
-            Limitleri ayarlayın, özellikleri düzenleyin
-          </p>
+    <aside className="min-w-[340px] max-w-[400px] bg-gradient-to-b from-white/95 to-slate-50/95 backdrop-blur-md border-l border-slate-200/60 flex flex-col shadow-2xl h-full overflow-hidden">
+      <Card className="h-full flex flex-col shadow-none border-none bg-transparent">
+        {/* Header */}
+        <CardHeader className="pb-6 px-6 pt-6 bg-gradient-to-r from-blue-50/80 to-indigo-50/60 border-b border-slate-200/50 flex-shrink-0">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg">
+              <Settings className="w-5 h-5" />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+                Graph Özellikleri
+              </CardTitle>
+              <p className="text-sm text-slate-500 mt-1">Sorgu parametrelerini ve node özelliklerini yönetin</p>
+            </div>
+          </div>
         </CardHeader>
 
-        <Separator />
+        <CardContent className="flex-1 flex flex-col p-0 overflow-hidden min-h-0">
+          <ScrollArea
+            className="flex-1 h-full"
+            style={{
+              scrollbarWidth: 'thin',
+              scrollbarColor: '#6366f1 #f1f5f9'
+            }}
+          >
+            <div className="px-6 py-6 space-y-6">
 
-        <CardContent className="flex-1 flex flex-col pt-4 pb-0 px-0">
-          <ScrollArea className="flex-1">
-            <div className="px-3 flex flex-col gap-4">
-              {/* SONUÇ LİMİTİ */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-semibold text-gray-600">
-                  Sonuç Limiti
-                </label>
-                <Input
-                  type="number"
-                  min={1}
-                  value={resultLimit}
-                  onChange={(e) => setResultLimit(Number(e.target.value))}
-                  className="h-9"
-                />
+              {/* Sorgu Parametreleri */}
+              <div className="bg-gradient-to-br from-slate-50/80 to-blue-50/30 rounded-2xl p-6 border border-slate-200/50 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="p-2 rounded-lg bg-gradient-to-r from-slate-600 to-slate-700 text-white">
+                    <Database className="w-4 h-4" />
+                  </div>
+                  <h3 className="font-bold text-slate-800">Sorgu Parametreleri</h3>
+                </div>
+
+                <div className="space-y-5">
+                  <div className="space-y-3">
+                    <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                      <div className="p-1 rounded bg-blue-100">
+                        <Target className="w-3.5 h-3.5 text-blue-600" />
+                      </div>
+                      Sonuç Limiti
+                    </label>
+                    <Input
+                      type="number"
+                      min={1}
+                      max={1000}
+                      value={resultLimit}
+                      onChange={(e) => setResultLimit(Number(e.target.value))}
+                      className="h-11 bg-white/80 border-slate-300/50 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
+                      placeholder="Maksimum sonuç sayısı"
+                    />
+                    <p className="text-xs text-slate-500 bg-slate-50/50 px-3 py-1.5 rounded-lg">Döndürülecek maksimum kayıt sayısı</p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                      <div className="p-1 rounded bg-emerald-100">
+                        <BarChart3 className="w-3.5 h-3.5 text-emerald-600" />
+                      </div>
+                      Sorgu Derinliği
+                    </label>
+                    <Input
+                      type="number"
+                      min={1}
+                      max={10}
+                      value={queryDepth}
+                      onChange={(e) => setQueryDepth(Number(e.target.value))}
+                      className="h-11 bg-white/80 border-slate-300/50 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
+                      placeholder="Traversal derinliği"
+                    />
+                    <p className="text-xs text-slate-500 bg-slate-50/50 px-3 py-1.5 rounded-lg">Graph'ta kaç seviye derinlik taranacak</p>
+                  </div>
+                </div>
               </div>
 
-              {/* SORGU DERİNLİĞİ */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-semibold text-gray-600">
-                  Sorgu Derinliği
-                </label>
-                <Input
-                  type="number"
-                  min={1}
-                  value={queryDepth}
-                  onChange={(e) => setQueryDepth(Number(e.target.value))}
-                  className="h-9"
-                />
-              </div>
-
-              {/* NODE ÖZELLİKLERİ */}
-              {selectedNode && (
-                <div className="mt-4">
-                  <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                    {selectedNode.data.label} Özellikleri
-                  </h3>
+              {/* Node Özellikleri */}
+              {selectedNode ? (
+                <div className="bg-gradient-to-br from-indigo-50/80 to-purple-50/60 rounded-2xl p-6 border border-indigo-200/50 shadow-sm hover:shadow-md transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-5">
+                    <div
+                      className="w-5 h-5 rounded-full border-2 border-white shadow-lg"
+                      style={{ backgroundColor: selectedNode.data.color || '#64748b' }}
+                    />
+                    <h3 className="font-bold text-slate-800">{selectedNode.data.label} Detayları</h3>
+                  </div>
                   <NodePropertyForm
                     nodeType={selectedNode.data.type}
                     values={selectedNode.data.properties || {}}
                     onChange={onNodePropertyChange}
                   />
 
-                  {/* FİLTRE BUTONU */}
-                  {onFilter && (
-                    <Button
-                      variant="outline"
-                      onClick={onFilter}
+                  {onSave && (
+                    <button
+                      onClick={onSave}
                       className="
-                      mt-4 w-full h-10 rounded-lg
-                      px-3 justify-start items-center gap-3
-                      bg-gray-50 hover:bg-blue-50 border-gray-200
-                      shadow-sm transition
-                    "
+                        mt-6 w-full h-12 rounded-2xl
+                        bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600
+                        hover:from-emerald-600 hover:via-green-600 hover:to-emerald-700
+                        text-white font-bold text-sm
+                        shadow-lg hover:shadow-2xl hover:-translate-y-1
+                        transition-all duration-300 ease-out
+                        flex items-center justify-center gap-3
+                        active:scale-[0.96] overflow-hidden group
+                        border border-emerald-400/50
+                      "
                     >
-                      <Filter className="w-5 h-5" />
-                      <span className="font-medium text-gray-800">Filtrele</span>
-                    </Button>
-                  )} 
-                  {/* bu butonu aktifleştir */}
-
-                  <div className="my-6 flex items-center">
-                    <div className="flex-grow border-t border-gray-200"></div>
-                    <span className="mx-3 text-xs text-gray-400">veya</span>
-                    <div className="flex-grow border-t border-gray-200"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                      <Save className="w-4 h-4 relative z-10 transition-transform group-hover:rotate-12" />
+                      <span className="relative z-10">Node'u Kaydet</span>
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className="bg-gradient-to-br from-slate-50/80 to-gray-50/60 rounded-2xl p-8 border border-slate-200/50 text-center shadow-sm">
+                  <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-100 to-gray-100 text-slate-400 w-fit mx-auto mb-5">
+                    <Info className="w-7 h-7" />
                   </div>
+                  <h3 className="font-bold text-slate-800 mb-3">Node Seçilmedi</h3>
+                  <p className="text-sm text-slate-600 leading-relaxed bg-slate-50/50 px-4 py-3 rounded-xl">
+                    Özelliklerini düzenlemek için şemadan bir node seçin.
+                    Sol panelden yeni node'lar ekleyebilir veya mevcut node'ları düzenleyebilirsiniz.
+                  </p>
                 </div>
               )}
+
+              {/* Graph İstatistikleri */}
+              <div className="bg-gradient-to-br from-violet-50/80 to-purple-50/60 rounded-2xl p-6 border border-violet-200/50 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="p-2 rounded-xl bg-gradient-to-r from-violet-500 to-purple-500 text-white shadow-lg">
+                    <BarChart3 className="w-4 h-4" />
+                  </div>
+                  <h3 className="font-bold text-slate-800">Graph İstatistikleri</h3>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-violet-100/50 hover:shadow-sm transition-all duration-200">
+                    <div className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">{nodes.length}</div>
+                    <div className="text-xs font-medium text-slate-600 mt-1">Node'lar</div>
+                  </div>
+                  <div className="text-center p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-violet-100/50 hover:shadow-sm transition-all duration-200">
+                    <div className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">{edges.length}</div>
+                    <div className="text-xs font-medium text-slate-600 mt-1">Bağlantılar</div>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </ScrollArea>
-
-          <Separator className="my-4" />
-
-          {/* SORGULA BUTONU */}
-          <div className="px-3 flex flex-col gap-2 mb-3">
-            <Button
-              onClick={onQuery}
-              className="
-               w-full h-10 rounded-lg
-              px-3  gap-3
-              bg-gray-50 hover:bg-blue-50 border-gray-200
-              shadow-sm transition flex justify-center items-center
-            "
-            >
-              <Play color="blue" className="w-5 h-5" />
-              <span className="font-medium text-gray-800">Sorgula</span>
-            </Button>
-          </div>
         </CardContent>
       </Card>
     </aside>

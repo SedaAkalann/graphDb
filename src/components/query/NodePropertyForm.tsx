@@ -1,5 +1,4 @@
-import React from "react";
-import { entityProperties } from "./entityProperties";
+import { entityProperties } from "../../constants/entityProperties";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -16,31 +15,30 @@ export const NodePropertyForm = ({
   onChange,
 }: {
   nodeType: string;
-  values: Record<string, any>;
-  onChange: (key: string, value: any) => void;
+  values: Record<string, string | number | boolean>;
+  onChange: (key: string, value: string | number | boolean) => void;
 }) => {
   const props = entityProperties[nodeType];
-  console.log(props,"PROPS")
   if (!props) return null;
 
   return (
-    <form className="flex flex-col gap-4">
+    <div className="space-y-4">
       {props.map((prop) => (
-        <div key={prop.key} className="flex flex-col gap-2">
-          <Label className="text-xs font-semibold text-gray-600">
+        <div key={prop.key} className="space-y-2">
+          <Label className="text-sm font-medium text-slate-600 capitalize">
             {prop.label}
           </Label>
 
           {prop.type === "select" ? (
             <Select
-              value={values[prop.key] || ""}
+              value={String(values[prop.key] || "")}
               onValueChange={(val) => onChange(prop.key, val)}
             >
-              <SelectTrigger className="h-9">
-                <SelectValue placeholder="Seçiniz" />
+              <SelectTrigger className="h-10 bg-white border-slate-200 focus:border-blue-500 focus:ring-blue-500/20">
+                <SelectValue placeholder={`${prop.label} seçin...`} />
               </SelectTrigger>
               <SelectContent>
-                {prop.options.map((opt: string) => (
+                {prop.options?.map((opt: string) => (
                   <SelectItem key={opt} value={opt}>
                     {opt}
                   </SelectItem>
@@ -50,13 +48,17 @@ export const NodePropertyForm = ({
           ) : (
             <Input
               type={prop.type}
-              value={values[prop.key] || ""}
-              onChange={(e) => onChange(prop.key, e.target.value)}
-              className="h-9"
+              value={String(values[prop.key] || "")}
+              onChange={(e) => {
+                const val = prop.type === "number" ? Number(e.target.value) : e.target.value;
+                onChange(prop.key, val);
+              }}
+              className="h-10 bg-white border-slate-200 focus:border-blue-500 focus:ring-blue-500/20"
+              placeholder={`${prop.label} girin...`}
             />
           )}
         </div>
       ))}
-    </form>
+    </div>
   );
 };

@@ -1,10 +1,23 @@
-export const entityProperties = {
+export interface PropertyDefinition {
+  key: string;
+  label: string;
+  type: "text" | "number" | "select";
+  options?: string[];
+}
+
+export const entityProperties: Record<string, PropertyDefinition[]> = {
   insan: [
     { key: "isim", label: "İsim", type: "text" },
+    { key: "soyisim", label: "Soyisim", type: "text" },
     { key: "tc", label: "TC Kimlik", type: "text" },
     { key: "yas", label: "Yaş", type: "number" },
     { key: "cinsiyet", label: "Cinsiyet", type: "select", options: ["Kadın", "Erkek", "Diğer"] },
     { key: "meslek", label: "Meslek", type: "text" },
+    { key: "telefon", label: "Telefon", type: "text" },
+    { key: "email", label: "Email", type: "text" },
+    { key: "dogumyeri", label: "Doğum Yeri", type: "text" },
+    { key: "medenihal", label: "Medeni Hal", type: "select", options: ["Bekar", "Evli", "Dul", "Boşanmış"] },
+    { key: "egitim", label: "Eğitim Durumu", type: "select", options: ["İlkokul", "Ortaokul", "Lise", "Üniversite", "Yüksek Lisans", "Doktora"] },
   ],
   plaka: [
     { key: "plaka", label: "Plaka", type: "text" },

@@ -117,4 +117,44 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Modern Scroll Bar Styles */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+    border-radius: 10px;
+    border: 1px solid #e0e7ff;
+    box-shadow: 0 2px 4px rgba(99, 102, 241, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%);
+    box-shadow: 0 4px 8px rgba(99, 102, 241, 0.2);
+    transform: scale(1.05);
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(180deg, #4338ca 0%, #6d28d9 50%, #7e22ce 100%);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: #f8fafc;
+  }
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #6366f1 #f1f5f9;
 }
