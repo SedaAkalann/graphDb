@@ -130,7 +130,7 @@ export const ResultsViewer: React.FC<{ data: CytoData | null; onBack: () => void
             },
           ],
           layout: {
-            name: "cose",
+            name: "breadthfirst", //grid,breadthfirst,circle,
             padding: 60,
             animate: true,
             animationDuration: 1200,
@@ -510,7 +510,7 @@ export const ResultsViewer: React.FC<{ data: CytoData | null; onBack: () => void
       <button
         onClick={onBack}
         className="
-          absolute top-6 right-6 z-10
+          absolute top-6 left-6 z-10
           h-12 px-6 rounded-2xl
           bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
           hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600

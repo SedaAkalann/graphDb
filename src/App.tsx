@@ -2,8 +2,10 @@ import React from "react";
 import type { Edge, Node } from "reactflow";
 import { Layout } from "./components/layout/Layout";
 import { QueryBuilder } from "./components/query/QueryBuilder";
-import { ResultsViewer } from "./components/result/ResultsViewer";
 import type { CytoData, RFEdgeData, RFNodeData } from "./types/types";
+import { ResultsViewer } from "./components/result/ResultsViewer";
+
+
 
 export const App: React.FC = () => {
   const [isQueryMode, setIsQueryMode] = React.useState(true);

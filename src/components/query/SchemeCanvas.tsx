@@ -187,7 +187,7 @@ export const SchemeCanvas = ({
         onPaneClick={onPaneClick}
         fitView
       >
-        <MiniMap nodeColor="#2563eb" />
+        <MiniMap nodeColor="pink" />
         <Background gap={24} color="#e0e7ff" />
         <Controls />
       </ReactFlow>
