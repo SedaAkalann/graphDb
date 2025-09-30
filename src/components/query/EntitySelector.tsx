@@ -38,18 +38,18 @@ export const EntitySelector: React.FC<{
   onClear?: () => void;
   onLoadSample?: () => void;
 }> = ({ onClear, onLoadSample }) => (
-  <aside className="min-w-[300px] max-w-[340px] bg-gradient-to-b from-white/95 to-slate-50/95 backdrop-blur-md border-r border-slate-200/60 flex flex-col shadow-2xl h-full overflow-hidden">
+  <aside className="min-w-[300px] max-w-[340px] bg-gradient-to-b from-white/95 to-slate-50/95 dark:from-gray-800/95 dark:to-gray-900/95 backdrop-blur-md border-r border-slate-200/60 dark:border-gray-700/60 flex flex-col shadow-2xl h-full overflow-hidden ">
     <Card className="h-full flex flex-col shadow-none border-none bg-transparent">
 
       {/* Header */}
-      <CardHeader className="pb-6 px-6 pt-6 bg-gradient-to-r from-purple-50/80 to-pink-50/60 border-b border-slate-200/50 flex-shrink-0">
+      <CardHeader className="pb-6 px-6 pt-6 bg-gradient-to-r from-purple-50/80 to-pink-50/60 dark:from-purple-900/40 dark:to-pink-900/40 border-b border-slate-200/50 dark:border-gray-700/50 flex-shrink-0 ">
         <div className="flex items-center gap-4">
           <div className="p-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg">
             <Layers3 className="w-5 h-5" />
           </div>
           <div>
-            <CardTitle className="text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">Entity Paleti</CardTitle>
-            <p className="text-sm text-slate-500 mt-1">Graph şemasını oluşturmak için sürükle-bırak yapın</p>
+            <CardTitle className="text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 dark:from-slate-200 dark:to-slate-400 bg-clip-text text-transparent">Entity Paleti</CardTitle>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Graph şemasını oluşturmak için sürükle-bırak yapın</p>
           </div>
         </div>
       </CardHeader>
@@ -67,8 +67,8 @@ export const EntitySelector: React.FC<{
             {/* Entity List */}
             <div className="pb-4">
               <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="w-4 h-4 text-slate-600" />
-                <h3 className="font-semibold text-slate-700">Mevcut Entity'ler</h3>
+                <Sparkles className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                <h3 className="font-semibold text-slate-700 dark:text-slate-300">Mevcut Entity'ler</h3>
               </div>
 
               <div className="space-y-3">
@@ -84,8 +84,8 @@ export const EntitySelector: React.FC<{
                     className="
                       w-full h-14 rounded-2xl
                       px-5 flex items-center gap-4
-                      bg-white/80 backdrop-blur-sm hover:bg-white/90 
-                      border border-slate-200/60 hover:border-slate-300
+                      bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white/90 dark:hover:bg-gray-700/90
+                      border border-slate-200/60 dark:border-gray-600/60 hover:border-slate-300 dark:hover:border-gray-500
                       shadow-sm hover:shadow-lg cursor-grab active:scale-[0.98] 
                       transition-all duration-300 ease-out
                       group hover:-translate-y-0.5
@@ -101,9 +101,9 @@ export const EntitySelector: React.FC<{
                     >
                       {entity.icon}
                     </div>
-                    <span className="font-semibold text-slate-800 group-hover:text-slate-900">{entity.label}</span>
+                    <span className="font-semibold text-slate-800 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-slate-100">{entity.label}</span>
                     <div className="ml-auto opacity-0 group-hover:opacity-100 transition-all duration-200">
-                      <div className="text-xs font-medium text-slate-500 bg-slate-100/80 px-3 py-1.5 rounded-lg backdrop-blur-sm">
+                      <div className="text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-100/80 dark:bg-gray-700/80 px-3 py-1.5 rounded-lg backdrop-blur-sm">
                         Sürükle & Bırak
                       </div>
                     </div>
@@ -114,12 +114,12 @@ export const EntitySelector: React.FC<{
 
             {/* Help Section */}
             <div className="pb-4">
-              <div className="bg-blue-50/50 rounded-xl p-4 border border-blue-100">
+              <div className="bg-blue-50/50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-100 dark:border-blue-800/30">
                 <div className="flex items-center gap-2 mb-2">
-                  <HelpCircle className="w-4 h-4 text-blue-600" />
-                  <h4 className="font-medium text-slate-700">Nasıl Kullanılır?</h4>
+                  <HelpCircle className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <h4 className="font-medium text-slate-700 dark:text-slate-300">Nasıl Kullanılır?</h4>
                 </div>
-                <p className="text-sm text-slate-600 leading-relaxed">
+                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                   Entity'leri orta panele sürükleyerek graph şemanızı oluşturun.
                   Node'lar arasına bağlantı çizmek için node'dan node'a çizgi çekin.
                 </p>

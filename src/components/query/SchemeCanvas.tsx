@@ -10,6 +10,7 @@ import ReactFlow, {
   applyNodeChanges,
 } from "reactflow";
 import "reactflow/dist/style.css";
+import { useDarkMode } from "../../contexts/DarkModeContext";
 import type { RFEdgeData, RFNodeData } from "../../types/types";
 import { EdgeModal } from "./EdgeModal";
 
@@ -45,6 +46,7 @@ export const SchemeCanvas = ({
   onNodeSelect: (node: Node<RFNodeData> | null) => void;
   onQuery: () => void;
 }) => {
+  const { isDarkMode } = useDarkMode();
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] =
     useState<ReactFlowInstance | null>(null);
@@ -63,9 +65,9 @@ export const SchemeCanvas = ({
       console.log(label, type, color);
       if (!label || !reactFlowInstance || !reactFlowBounds) return;
 
-      const position = reactFlowInstance.project({
-        x: event.clientX - reactFlowBounds.left,
-        y: event.clientY - reactFlowBounds.top,
+      const position = reactFlowInstance.screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
       });
 
       const id = getId();
@@ -142,11 +144,11 @@ export const SchemeCanvas = ({
   return (
     <main
       ref={reactFlowWrapper}
-      className="flex-1 h-full bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative"
+      className="flex-1 h-full bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-blue-900/30 dark:via-gray-900 dark:to-indigo-900/30 relative "
       style={{
         minWidth: 0,
-        borderRight: "1px solid #e5e7eb",
-        boxShadow: "0 0 24px 0 rgba(30,41,59,0.04)",
+        borderRight: isDarkMode ? "1px solid #374151" : "1px solid #e5e7eb",
+        boxShadow: isDarkMode ? "0 0 24px 0 rgba(0,0,0,0.2)" : "0 0 24px 0 rgba(30,41,59,0.04)",
       }}
     >
       {/* Sorgula Butonu - Sağ Üst */}
@@ -187,9 +189,20 @@ export const SchemeCanvas = ({
         onPaneClick={onPaneClick}
         fitView
       >
-        <MiniMap nodeColor="pink" />
-        <Background gap={24} color="#e0e7ff" />
-        <Controls />
+        <MiniMap
+          nodeColor={isDarkMode ? "#8b5cf6" : "pink"}
+          maskColor={isDarkMode ? "rgba(17, 24, 39, 0.8)" : "rgba(255, 255, 255, 0.8)"}
+          style={{
+            backgroundColor: isDarkMode ? "#1f2937" : "#f8fafc",
+          }}
+        />
+        <Background
+          gap={24}
+          color={isDarkMode ? "#374151" : "#e0e7ff"}
+        />
+        <Controls
+          className={isDarkMode ? "dark" : ""}
+        />
       </ReactFlow>
 
       <EdgeModal open={edgeModalOpen} onClose={closeEdgeModal} onSave={handleEdgeModalSave} />

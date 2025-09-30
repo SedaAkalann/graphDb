@@ -224,3 +224,30 @@
   background-size: 200px 100%;
   animation: shimmer 2s infinite;
 }
+
+/* ReactFlow Dark Mode Styles */
+.dark .react-flow__controls {
+  background: #374151;
+  border: 1px solid #4b5563;
+}
+
+.dark .react-flow__controls-button {
+  background: #4b5563;
+  border: 1px solid #6b7280;
+  color: #e5e7eb;
+}
+
+.dark .react-flow__controls-button:hover {
+  background: #6b7280;
+  color: #f3f4f6;
+}
+
+.dark .react-flow__minimap {
+  background: #1f2937;
+  border: 1px solid #374151;
+}
+
+.dark .react-flow__attribution {
+  background: rgba(31, 41, 55, 0.8);
+  color: #9ca3af;
+}

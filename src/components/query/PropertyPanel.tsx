@@ -33,19 +33,19 @@ export const PropertyPanel: React.FC<{
   nodes = [],
   edges = [],
 }) => (
-    <aside className="min-w-[340px] max-w-[400px] bg-gradient-to-b from-white/95 to-slate-50/95 backdrop-blur-md border-l border-slate-200/60 flex flex-col shadow-2xl h-full overflow-hidden">
+    <aside className="min-w-[340px] max-w-[400px] bg-gradient-to-b from-white/95 to-slate-50/95 dark:from-gray-800/95 dark:to-gray-900/95 backdrop-blur-md border-l border-slate-200/60 dark:border-gray-700/60 flex flex-col shadow-2xl h-full overflow-hidden ">
       <Card className="h-full flex flex-col shadow-none border-none bg-transparent">
         {/* Header */}
-        <CardHeader className="pb-6 px-6 pt-6 bg-gradient-to-r from-blue-50/80 to-indigo-50/60 border-b border-slate-200/50 flex-shrink-0">
+        <CardHeader className="pb-6 px-6 pt-6 bg-gradient-to-r from-blue-50/80 to-indigo-50/60 dark:from-blue-900/40 dark:to-indigo-900/40 border-b border-slate-200/50 dark:border-gray-700/50 flex-shrink-0 ">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg">
               <Settings className="w-5 h-5" />
             </div>
             <div>
-              <CardTitle className="text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+              <CardTitle className="text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 dark:from-slate-200 dark:to-slate-400 bg-clip-text text-transparent">
                 Graph Özellikleri
               </CardTitle>
-              <p className="text-sm text-slate-500 mt-1">Sorgu parametrelerini ve node özelliklerini yönetin</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Sorgu parametrelerini ve node özelliklerini yönetin</p>
             </div>
           </div>
         </CardHeader>
@@ -61,19 +61,19 @@ export const PropertyPanel: React.FC<{
             <div className="px-6 py-6 space-y-6">
 
               {/* Sorgu Parametreleri */}
-              <div className="bg-gradient-to-br from-slate-50/80 to-blue-50/30 rounded-2xl p-6 border border-slate-200/50 shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="bg-gradient-to-br from-slate-50/80 to-blue-50/30 dark:from-gray-800/80 dark:to-blue-900/30 rounded-2xl p-6 border border-slate-200/50 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="p-2 rounded-lg bg-gradient-to-r from-slate-600 to-slate-700 text-white">
                     <Database className="w-4 h-4" />
                   </div>
-                  <h3 className="font-bold text-slate-800">Sorgu Parametreleri</h3>
+                  <h3 className="font-bold text-slate-800 dark:text-slate-200">Sorgu Parametreleri</h3>
                 </div>
 
                 <div className="space-y-5">
                   <div className="space-y-3">
-                    <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                      <div className="p-1 rounded bg-blue-100">
-                        <Target className="w-3.5 h-3.5 text-blue-600" />
+                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                      <div className="p-1 rounded bg-blue-100 dark:bg-blue-900/50">
+                        <Target className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                       </div>
                       Sonuç Limiti
                     </label>
@@ -83,16 +83,16 @@ export const PropertyPanel: React.FC<{
                       max={1000}
                       value={resultLimit}
                       onChange={(e) => setResultLimit(Number(e.target.value))}
-                      className="h-11 bg-white/80 border-slate-300/50 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
+                      className="h-11 bg-white/80 dark:bg-gray-800/80 border-slate-300/50 dark:border-gray-600/50 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 text-slate-900 dark:text-slate-100"
                       placeholder="Maksimum sonuç sayısı"
                     />
-                    <p className="text-xs text-slate-500 bg-slate-50/50 px-3 py-1.5 rounded-lg">Döndürülecek maksimum kayıt sayısı</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-gray-800/50 px-3 py-1.5 rounded-lg">Döndürülecek maksimum kayıt sayısı</p>
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                      <div className="p-1 rounded bg-emerald-100">
-                        <BarChart3 className="w-3.5 h-3.5 text-emerald-600" />
+                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                      <div className="p-1 rounded bg-emerald-100 dark:bg-emerald-900/50">
+                        <BarChart3 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                       </div>
                       Sorgu Derinliği
                     </label>
@@ -102,23 +102,23 @@ export const PropertyPanel: React.FC<{
                       max={10}
                       value={queryDepth}
                       onChange={(e) => setQueryDepth(Number(e.target.value))}
-                      className="h-11 bg-white/80 border-slate-300/50 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
+                      className="h-11 bg-white/80 dark:bg-gray-800/80 border-slate-300/50 dark:border-gray-600/50 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 text-slate-900 dark:text-slate-100"
                       placeholder="Traversal derinliği"
                     />
-                    <p className="text-xs text-slate-500 bg-slate-50/50 px-3 py-1.5 rounded-lg">Graph'ta kaç seviye derinlik taranacak</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-gray-800/50 px-3 py-1.5 rounded-lg">Graph'ta kaç seviye derinlik taranacak</p>
                   </div>
                 </div>
               </div>
 
               {/* Node Özellikleri */}
               {selectedNode ? (
-                <div className="bg-gradient-to-br from-indigo-50/80 to-purple-50/60 rounded-2xl p-6 border border-indigo-200/50 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="bg-gradient-to-br from-indigo-50/80 to-purple-50/60 dark:from-indigo-900/40 dark:to-purple-900/40 rounded-2xl p-6 border border-indigo-200/50 dark:border-indigo-800/50 shadow-sm hover:shadow-md transition-all duration-300">
                   <div className="flex items-center gap-3 mb-5">
                     <div
-                      className="w-5 h-5 rounded-full border-2 border-white shadow-lg"
+                      className="w-5 h-5 rounded-full border-2 border-white dark:border-gray-800 shadow-lg"
                       style={{ backgroundColor: selectedNode.data.color || '#64748b' }}
                     />
-                    <h3 className="font-bold text-slate-800">{selectedNode.data.label} Detayları</h3>
+                    <h3 className="font-bold text-slate-800 dark:text-slate-200">{selectedNode.data.label} Detayları</h3>
                   </div>
                   <NodePropertyForm
                     nodeType={selectedNode.data.type}
@@ -148,12 +148,12 @@ export const PropertyPanel: React.FC<{
                   )}
                 </div>
               ) : (
-                <div className="bg-gradient-to-br from-slate-50/80 to-gray-50/60 rounded-2xl p-8 border border-slate-200/50 text-center shadow-sm">
-                  <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-100 to-gray-100 text-slate-400 w-fit mx-auto mb-5">
+                <div className="bg-gradient-to-br from-slate-50/80 to-gray-50/60 dark:from-gray-800/80 dark:to-gray-900/60 rounded-2xl p-8 border border-slate-200/50 dark:border-gray-700/50 text-center shadow-sm">
+                  <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-100 to-gray-100 dark:from-gray-700 dark:to-gray-800 text-slate-400 dark:text-gray-500 w-fit mx-auto mb-5">
                     <Info className="w-7 h-7" />
                   </div>
-                  <h3 className="font-bold text-slate-800 mb-3">Node Seçilmedi</h3>
-                  <p className="text-sm text-slate-600 leading-relaxed bg-slate-50/50 px-4 py-3 rounded-xl">
+                  <h3 className="font-bold text-slate-800 dark:text-slate-200 mb-3">Node Seçilmedi</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed bg-slate-50/50 dark:bg-gray-800/50 px-4 py-3 rounded-xl">
                     Özelliklerini düzenlemek için şemadan bir node seçin.
                     Sol panelden yeni node'lar ekleyebilir veya mevcut node'ları düzenleyebilirsiniz.
                   </p>
@@ -161,21 +161,21 @@ export const PropertyPanel: React.FC<{
               )}
 
               {/* Graph İstatistikleri */}
-              <div className="bg-gradient-to-br from-violet-50/80 to-purple-50/60 rounded-2xl p-6 border border-violet-200/50 shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="bg-gradient-to-br from-violet-50/80 to-purple-50/60 dark:from-violet-900/40 dark:to-purple-900/40 rounded-2xl p-6 border border-violet-200/50 dark:border-violet-800/50 shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="flex items-center gap-3 mb-5">
                   <div className="p-2 rounded-xl bg-gradient-to-r from-violet-500 to-purple-500 text-white shadow-lg">
                     <BarChart3 className="w-4 h-4" />
                   </div>
-                  <h3 className="font-bold text-slate-800">Graph İstatistikleri</h3>
+                  <h3 className="font-bold text-slate-800 dark:text-slate-200">Graph İstatistikleri</h3>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-violet-100/50 hover:shadow-sm transition-all duration-200">
-                    <div className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">{nodes.length}</div>
-                    <div className="text-xs font-medium text-slate-600 mt-1">Node'lar</div>
+                  <div className="text-center p-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl border border-violet-100/50 dark:border-violet-800/50 hover:shadow-sm transition-all duration-200">
+                    <div className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">{nodes.length}</div>
+                    <div className="text-xs font-medium text-slate-600 dark:text-slate-400 mt-1">Node'lar</div>
                   </div>
-                  <div className="text-center p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-violet-100/50 hover:shadow-sm transition-all duration-200">
-                    <div className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">{edges.length}</div>
-                    <div className="text-xs font-medium text-slate-600 mt-1">Bağlantılar</div>
+                  <div className="text-center p-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl border border-violet-100/50 dark:border-violet-800/50 hover:shadow-sm transition-all duration-200">
+                    <div className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent">{edges.length}</div>
+                    <div className="text-xs font-medium text-slate-600 dark:text-slate-400 mt-1">Bağlantılar</div>
                   </div>
                 </div>
               </div>

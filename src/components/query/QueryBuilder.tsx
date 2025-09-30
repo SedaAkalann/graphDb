@@ -199,6 +199,249 @@ export const QueryBuilder: React.FC<QueryBuilderProps> = ({
             properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
           }
         },
+        {
+          data: {
+            id: "n12",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n13",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n14",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n15",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n16",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n17",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n18",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n19",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n20",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n21",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n22",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n23",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n24",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n25",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n26",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n17",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n28",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n29",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n30",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n31",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n32",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n33",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n34",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n35",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n36",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n37",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
+        {
+          data: {
+            id: "n38",
+            label: "Mehmet Özkan",
+            backgroundColor: entityColors.insan,
+            type: "insan",
+            properties: `TC: 11223344556\nYaş: 42\nMeslek: İnşaat Mühendisi\nCinsiyet: Erkek\nDoğum Yeri: Bursa\nMedeni Hal: Evli\nÇocuk: 2\nDeneyim: 18 yıl`
+          }
+        },
         // Çok daha karmaşık bağlantı ağı
         { data: { source: "n1", target: "n2", label: "Sahip" } },
         { data: { source: "n2", target: "n3", label: "Kayıtlı Adres" } },
@@ -222,16 +465,26 @@ export const QueryBuilder: React.FC<QueryBuilderProps> = ({
         { data: { source: "n7", target: "n2", label: "Ofis Konumu" } },
         { data: { source: "n2", target: "n8", label: "Ofis Konumu" } },
         { data: { source: "n8", target: "n2", label: "Ofis Konumu" } },
-        { data: { source: "n8", target: "n4", label: "Ofis Konumu" } },
+        { data: { source: "n17", target: "n15", label: "Ofis Konumu" } },
         { data: { source: "n8", target: "n1", label: "Ofis Konumu" } },
         { data: { source: "n4", target: "n6", label: "Ofis Konumu" } },
         { data: { source: "n3", target: "n4", label: "Ofis Konumu" } },
         { data: { source: "n1", target: "n3", label: "Ofis Konumu" } },
         { data: { source: "n8", target: "n4", label: "Ofis Konumu" } },
-        { data: { source: "n8", target: "n4", label: "Ofis Konumu" } },
-        { data: { source: "n8", target: "n4", label: "Ofis Konumu" } },
-        { data: { source: "n8", target: "n4", label: "Ofis Konumu" } },
-        { data: { source: "n8", target: "n4", label: "Ofis Konumu" } },
+        { data: { source: "n8", target: "n24", label: "Ofis Konumu" } },
+        { data: { source: "n28", target: "n4", label: "Ofis Konumu" } },
+        { data: { source: "n21", target: "n14", label: "Ofis Konumu" } },
+        { data: { source: "n26", target: "n23", label: "Ofis Konumu" } },
+        { data: { source: "n29", target: "n13", label: "Ofis Konumu" } },
+        { data: { source: "n22", target: "n33", label: "Ofis Konumu" } },
+        { data: { source: "n32", target: "n12", label: "Ofis Konumu" } },
+        { data: { source: "n31", target: "n23", label: "Ofis Konumu" } },
+        { data: { source: "n28", target: "n8", label: "Ofis Konumu" } },
+        { data: { source: "n12", target: "n17", label: "Ofis Konumu" } },
+        { data: { source: "n15", target: "n7", label: "Ofis Konumu" } },
+        { data: { source: "n14", target: "n17", label: "Ofis Konumu" } },
+        { data: { source: "n29", target: "n8", label: "Ofis Konumu" } },
+        { data: { source: "n21", target: "n33", label: "Ofis Konumu" } },
       ],
     };
 
@@ -241,44 +494,44 @@ export const QueryBuilder: React.FC<QueryBuilderProps> = ({
   };
 
   return (
-    <div className="flex w-full h-full bg-gradient-to-br from-slate-50 via-white to-blue-50/30 overflow-hidden relative min-h-0">
+    <div className="flex w-full h-full bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900/30 overflow-hidden relative min-h-0 ">
       {/* Loading Overlay */}
       {isLoading && (
-        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center ">
           <div className="flex flex-col items-center gap-6">
             {/* Modern Spinner */}
             <div className="relative">
-              <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-              <div className="absolute inset-2 w-8 h-8 border-2 border-purple-200 border-b-purple-500 rounded-full animate-spin animate-reverse"></div>
+              <div className="w-16 h-16 border-4 border-blue-200 dark:border-blue-800 border-t-blue-600 dark:border-t-blue-400 rounded-full animate-spin"></div>
+              <div className="absolute inset-2 w-8 h-8 border-2 border-purple-200 dark:border-purple-800 border-b-purple-500 dark:border-b-purple-400 rounded-full animate-spin animate-reverse"></div>
             </div>
 
             {/* Loading Text with Animation */}
             <div className="text-center">
-              <div className="text-lg font-semibold text-slate-800 mb-2">
+              <div className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">
                 Graph Verisi Yükleniyor...
               </div>
-              <div className="text-sm text-slate-600 flex items-center gap-1">
+              <div className="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-1">
                 Analiz ediliyor
                 <span className="flex gap-1">
-                  <span className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                  <span className="w-1 h-1 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                  <span className="w-1 h-1 bg-pink-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                  <span className="w-1 h-1 bg-blue-500 dark:bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                  <span className="w-1 h-1 bg-purple-500 dark:bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                  <span className="w-1 h-1 bg-pink-500 dark:bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
                 </span>
               </div>
             </div>
 
             {/* Progress Steps */}
-            <div className="flex items-center gap-4 text-xs text-slate-500">
+            <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full"></div>
                 <span>Bağlantı Kuruldu</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                <div className="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full animate-pulse"></div>
                 <span>Veri Çekiliyor</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-slate-300 rounded-full"></div>
+                <div className="w-2 h-2 bg-slate-300 dark:bg-slate-600 rounded-full"></div>
                 <span>İşleniyor</span>
               </div>
             </div>

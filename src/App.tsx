@@ -4,8 +4,7 @@ import { Layout } from "./components/layout/Layout";
 import { QueryBuilder } from "./components/query/QueryBuilder";
 import type { CytoData, RFEdgeData, RFNodeData } from "./types/types";
 import { ResultsViewer } from "./components/result/ResultsViewer";
-
-
+import { DarkModeProvider } from "./contexts/DarkModeContext";
 
 export const App: React.FC = () => {
   const [isQueryMode, setIsQueryMode] = React.useState(true);
@@ -19,31 +18,33 @@ export const App: React.FC = () => {
   const [queryDepth, setQueryDepth] = React.useState(3);
 
   return (
-    <Layout>
-      {isQueryMode ? (
-        <QueryBuilder
-          // Şema verilerini props olarak geçiyoruz
-          nodes={nodes}
-          edges={edges}
-          setNodes={setNodes}
-          setEdges={setEdges}
-          selectedNode={selectedNode}
-          setSelectedNode={setSelectedNode}
-          resultLimit={resultLimit}
-          setResultLimit={setResultLimit}
-          queryDepth={queryDepth}
-          setQueryDepth={setQueryDepth}
-          onQuery={(data: CytoData) => {
-            setCytoData(data); // QueryBuilder'dan gelen veri
-            setIsQueryMode(false);
-          }}
-        />
-      ) : (
-        <ResultsViewer
-          data={cytoData}
-          onBack={() => setIsQueryMode(true)}
-        />
-      )}
-    </Layout>
+    <DarkModeProvider>
+      <Layout>
+        {isQueryMode ? (
+          <QueryBuilder
+            // Şema verilerini props olarak geçiyoruz
+            nodes={nodes}
+            edges={edges}
+            setNodes={setNodes}
+            setEdges={setEdges}
+            selectedNode={selectedNode}
+            setSelectedNode={setSelectedNode}
+            resultLimit={resultLimit}
+            setResultLimit={setResultLimit}
+            queryDepth={queryDepth}
+            setQueryDepth={setQueryDepth}
+            onQuery={(data: CytoData) => {
+              setCytoData(data); // QueryBuilder'dan gelen veri
+              setIsQueryMode(false);
+            }}
+          />
+        ) : (
+          <ResultsViewer
+            data={cytoData}
+            onBack={() => setIsQueryMode(true)}
+          />
+        )}
+      </Layout>
+    </DarkModeProvider>
   );
 };
