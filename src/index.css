@@ -251,3 +251,12 @@
   background: rgba(31, 41, 55, 0.8);
   color: #9ca3af;
 }
+
+/* Tooltip z-index override - Canvas üstünde çıkması için */
+[data-radix-popper-content-wrapper] {
+  z-index: 10000 !important;
+}
+
+[data-radix-tooltip-content] {
+  z-index: 10000 !important;
+}

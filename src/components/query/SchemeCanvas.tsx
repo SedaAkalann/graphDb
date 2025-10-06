@@ -5,14 +5,18 @@ import ReactFlow, {
   Background,
   Controls,
   MiniMap,
-  addEdge,
   applyEdgeChanges,
   applyNodeChanges,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { useDarkMode } from "../../contexts/DarkModeContext";
 import type { RFEdgeData, RFNodeData } from "../../types/types";
-import { EdgeModal } from "./EdgeModal";
+import { EdgePropertySheet } from "./EdgePropertySheet";
+import { NodePropertySheet } from "./NodePropertySheet";
+
+// Node ve edge types'ları component dışında tanımla
+const nodeTypes = {};
+const edgeTypes = {};
 
 let nodeId = 0;
 const getId = () => `node_${nodeId++}`;
@@ -37,22 +41,145 @@ export const SchemeCanvas = ({
   setNodes,
   setEdges,
   onNodeSelect,
+  onEdgeSelect,
   onQuery,
 }: {
   nodes: Node<RFNodeData>[];
   edges: Edge<RFEdgeData>[];
   setNodes: React.Dispatch<React.SetStateAction<Node<RFNodeData>[]>>;
   setEdges: React.Dispatch<React.SetStateAction<Edge<RFEdgeData>[]>>;
-  onNodeSelect: (node: Node<RFNodeData> | null) => void;
+  onNodeSelect?: (node: Node<RFNodeData> | null) => void;
+  onEdgeSelect?: (edge: Edge<RFEdgeData> | null) => void;
   onQuery: () => void;
 }) => {
   const { isDarkMode } = useDarkMode();
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] =
     useState<ReactFlowInstance | null>(null);
+  
+  // Edge Property Sheet için state'ler
+  const [isEdgePropertySheetOpen, setIsEdgePropertySheetOpen] = useState(false);
+  const [selectedEdgeForSheet, setSelectedEdgeForSheet] = useState<Edge<RFEdgeData> | null>(null);
 
-  const [pendingEdge, setPendingEdge] = useState<Connection | null>(null);
-  const [edgeModalOpen, setEdgeModalOpen] = useState(false);
+  // Node Property Sheet için state'ler
+  const [isNodePropertySheetOpen, setIsNodePropertySheetOpen] = useState(false);
+  const [selectedNodeForSheet, setSelectedNodeForSheet] = useState<Node<RFNodeData> | null>(null);
+
+  // Node özellik değişiklik handler'ı
+  const handleNodePropertyChange = useCallback((key: string, value: string | number | boolean) => {
+    if (!selectedNodeForSheet) return;
+
+    setNodes((prevNodes) =>
+      prevNodes.map((node) => {
+        if (node.id === selectedNodeForSheet.id) {
+          const updatedNode: Node<RFNodeData> = {
+            ...node,
+            data: node.data ? {
+              ...node.data,
+              properties: {
+                ...node.data.properties,
+                [key]: value,
+              },
+            } : {
+              id: node.id,
+              label: 'Node',
+              type: 'default',
+              color: '#3b82f6',
+              properties: { [key]: value },
+            },
+          };
+          return updatedNode;
+        }
+        return node;
+      })
+    );
+
+    // Selected node'u da güncelle
+    setSelectedNodeForSheet((prev) => {
+      if (!prev) return null;
+      const updatedPrev: Node<RFNodeData> = {
+        ...prev,
+        data: prev.data ? {
+          ...prev.data,
+          properties: {
+            ...prev.data.properties,
+            [key]: value,
+          },
+        } : {
+          id: prev.id,
+          label: 'Node',
+          type: 'default',
+          color: '#3b82f6',
+          properties: { [key]: value },
+        },
+      };
+      return updatedPrev;
+    });
+  }, [selectedNodeForSheet, setNodes]);
+
+  // Edge özellik değişiklik handler'ı
+  const handleEdgePropertyChange = useCallback((key: string, value: string | number | boolean) => {
+    if (!selectedEdgeForSheet) return;
+
+    setEdges((prevEdges) =>
+      prevEdges.map((edge) => {
+        if (edge.id === selectedEdgeForSheet.id) {
+          const updatedEdge: Edge<RFEdgeData> = {
+            ...edge,
+            data: edge.data ? {
+              ...edge.data,
+              properties: {
+                ...edge.data.properties,
+                [key]: value,
+              },
+            } : {
+              id: edge.id,
+              source: edge.source,
+              target: edge.target,
+              label: 'Yeni Bağlantı',
+              properties: { [key]: value },
+            },
+          };
+
+          // Label'ı da güncelle - eğer 'label' key'i geldiyse
+          if (key === 'label') {
+            updatedEdge.label = String(value);
+            if (updatedEdge.data) {
+              updatedEdge.data.label = String(value);
+            }
+          }
+
+          return updatedEdge;
+        }
+        return edge;
+      })
+    );
+
+    // Selected edge'i de güncelle
+    setSelectedEdgeForSheet((prev) => {
+      if (!prev) return null;
+      const updatedPrev: Edge<RFEdgeData> = {
+        ...prev,
+        data: prev.data ? {
+          ...prev.data,
+          properties: {
+            ...prev.data.properties,
+            [key]: value,
+          },
+        } : {
+          id: prev.id,
+          source: prev.source,
+          target: prev.target,
+          label: 'Yeni Bağlantı',
+          properties: { [key]: value },
+        },
+        label: key === 'label' ? String(value) : prev.label,
+      };
+      return updatedPrev;
+    });
+  }, [selectedEdgeForSheet, setEdges]);
+
+
 
   // Node ekleme (drag-drop)
   const onDrop = useCallback(
@@ -62,7 +189,6 @@ export const SchemeCanvas = ({
       const label = event.dataTransfer.getData("application/reactflow-label");
       const color = event.dataTransfer.getData("application/reactflow-color");
       const type = event.dataTransfer.getData("application/reactflow-type");
-      console.log(label, type, color);
       if (!label || !reactFlowInstance || !reactFlowBounds) return;
 
       const position = reactFlowInstance.screenToFlowPosition({
@@ -84,7 +210,16 @@ export const SchemeCanvas = ({
       };
 
       setNodes((nds) => [...nds, newNode]);
-      onNodeSelect(newNode);
+      onNodeSelect?.(newNode);
+      
+      // Yeni node bırakıldığında direkt sheet'i aç
+      setTimeout(() => {
+        setSelectedNodeForSheet(newNode);
+        setIsNodePropertySheetOpen(true);
+        // Edge sheet'ini kapat
+        setIsEdgePropertySheetOpen(false);
+        setSelectedEdgeForSheet(null);
+      }, 100);
     },
     [reactFlowInstance, setNodes, onNodeSelect]
   );
@@ -95,51 +230,105 @@ export const SchemeCanvas = ({
     event.dataTransfer.dropEffect = "move";
   };
 
-  // Edge eklenince modal aç
+  // Edge eklenince direkt yaratıp sheet aç
   const onConnect = useCallback((params: Connection) => {
-    setPendingEdge(params);
-    setEdgeModalOpen(true);
-  }, []);
-
-  // Modal kaydetme
-  const handleEdgeModalSave = (relationType: string) => {
-    if (pendingEdge?.source && pendingEdge?.target) {
-      setEdges((eds) =>
-        addEdge(
-          {
-            ...pendingEdge,
-            id: `edge_${eds.length + 1}`,
-            label: relationType,
-            animated: true,
-            style: { strokeWidth: 2, stroke: "#2563eb" },
-            data: {
-              id: `${pendingEdge.source}-${pendingEdge.target}`,
-              source: pendingEdge.source,
-              target: pendingEdge.target,
-              label: relationType,
-            },
+    if (params.source && params.target) {
+      const newEdge: Edge<RFEdgeData> = {
+        id: `edge_${Date.now()}`,
+        source: params.source,
+        target: params.target,
+        label: 'Yeni Bağlantı',
+        animated: true,
+        style: {
+          strokeWidth: 2.5,
+          stroke: "#3b82f6",
+        },
+        labelStyle: {
+          fontSize: 12,
+          fontWeight: 600,
+          fill: "#1e293b",
+          backgroundColor: "rgba(255, 255, 255, 0.9)",
+          padding: "4px 8px",
+          borderRadius: "8px",
+          border: "1px solid rgba(59, 130, 246, 0.2)",
+          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)"
+        },
+        labelBgPadding: [8, 4] as [number, number],
+        labelBgBorderRadius: 8,
+        labelBgStyle: {
+          fill: "rgba(255, 255, 255, 0.95)",
+          stroke: "#3b82f6",
+          strokeWidth: 1,
+          filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))"
+        },
+        data: {
+          id: `${params.source}-${params.target}`,
+          source: params.source,
+          target: params.target,
+          label: 'Yeni Bağlantı',
+          properties: {
+            type: '', // Boş başlar, kullanıcı seçer
           },
-          eds
-        )
-      );
+        },
+      };
+
+      setEdges((eds) => [...eds, newEdge]);
+
+      // Edge'i seç ve sheet'i aç - setTimeout ile state update'i bekle
+      setTimeout(() => {
+        if (onEdgeSelect) {
+          onEdgeSelect(newEdge);
+        }
+        // Direkt bizim edge sheet'imizi de aç
+        setSelectedEdgeForSheet(newEdge);
+        setIsEdgePropertySheetOpen(true);
+      }, 100);
     }
-    closeEdgeModal();
-  };
+  }, [setEdges, onEdgeSelect]);
 
-  // Modal kapatma helper
-  const closeEdgeModal = () => {
-    setEdgeModalOpen(false);
-    setPendingEdge(null);
-  };
 
-  // Node seçimi
+
+  // Node seçimi - Node'a basınca hemen sheet'i aç
   const onNodeClick = useCallback(
-    (_event: React.MouseEvent, node: Node<RFNodeData>) => onNodeSelect(node),
+    (_event: React.MouseEvent, node: Node<RFNodeData>) => {
+      // Önce parent'a bildir
+      onNodeSelect?.(node);
+      // Sonra direkt sheet'i aç
+      setSelectedNodeForSheet(node);
+      setIsNodePropertySheetOpen(true);
+      // Edge sheet'ini kapat
+      setIsEdgePropertySheetOpen(false);
+      setSelectedEdgeForSheet(null);
+    },
     [onNodeSelect]
   );
 
+  // Edge seçimi - Edge'e basınca hemen sheet'i aç
+  const onEdgeClick = useCallback(
+    (_event: React.MouseEvent, edge: Edge<RFEdgeData>) => {
+      // Önce parent'a bildir
+      if (onEdgeSelect) {
+        onEdgeSelect(edge);
+      }
+      // Sonra direkt sheet'i aç
+      setSelectedEdgeForSheet(edge);
+      setIsEdgePropertySheetOpen(true);
+    },
+    [onEdgeSelect]
+  );
+
   // Canvas boşluğuna tıklayınca seçimi kaldır
-  const onPaneClick = useCallback(() => onNodeSelect(null), [onNodeSelect]);
+  const onPaneClick = useCallback(() => {
+    onNodeSelect?.(null);
+    if (onEdgeSelect) {
+      onEdgeSelect(null);
+    }
+    // Her iki sheet'i de kapat
+    setIsEdgePropertySheetOpen(false);
+    setSelectedEdgeForSheet(null);
+    setIsNodePropertySheetOpen(false);
+    setSelectedNodeForSheet(null);
+  }, [onNodeSelect, onEdgeSelect]);
 
   return (
     <main
@@ -175,6 +364,8 @@ export const SchemeCanvas = ({
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onNodesChange={(changes) =>
           setNodes((nds) => applyNodeChanges(changes, nds))
         }
@@ -186,7 +377,28 @@ export const SchemeCanvas = ({
         onDrop={onDrop}
         onDragOver={onDragOver}
         onNodeClick={onNodeClick}
+        onEdgeClick={onEdgeClick}
         onPaneClick={onPaneClick}
+        defaultEdgeOptions={{
+          animated: true,
+          style: {
+            strokeWidth: 2.5,
+            stroke: "#3b82f6"
+          },
+          labelStyle: {
+            fontSize: 10,
+            fontWeight: 500,
+            fill: "#1e293b"
+          },
+          labelBgPadding: [8, 4] as [number, number],
+          labelBgBorderRadius: 8,
+          labelBgStyle: {
+            fill: "rgba(255, 255, 255, 0.95)",
+            stroke: "#3b82f6",
+            strokeWidth: 1,
+            filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))"
+          }
+        }}
         fitView
       >
         <MiniMap
@@ -194,6 +406,8 @@ export const SchemeCanvas = ({
           maskColor={isDarkMode ? "rgba(17, 24, 39, 0.8)" : "rgba(255, 255, 255, 0.8)"}
           style={{
             backgroundColor: isDarkMode ? "#1f2937" : "#f8fafc",
+            // width:"80px",
+            // height:"80px",
           }}
         />
         <Background
@@ -205,7 +419,23 @@ export const SchemeCanvas = ({
         />
       </ReactFlow>
 
-      <EdgeModal open={edgeModalOpen} onClose={closeEdgeModal} onSave={handleEdgeModalSave} />
+      {/* Node Property Sheet */}
+      <NodePropertySheet
+        isOpen={isNodePropertySheetOpen}
+        onOpenChange={setIsNodePropertySheetOpen}
+        selectedNode={selectedNodeForSheet}
+        onNodePropertyChange={handleNodePropertyChange}
+      />
+
+      {/* Edge Property Sheet */}
+      <EdgePropertySheet
+        isOpen={isEdgePropertySheetOpen}
+        onOpenChange={setIsEdgePropertySheetOpen}
+        selectedEdge={selectedEdgeForSheet}
+        onEdgePropertyChange={handleEdgePropertyChange}
+        nodes={nodes}
+        edges={edges}
+      />
     </main>
   );
 };

@@ -62,24 +62,12 @@ export const GraphView: React.FC<GraphViewProps> = ({ data }) => {
                 "text-outline-opacity": 0.95,
                 "overlay-padding": "16px",
                 "z-index": 10,
-                "transition-property": "all",
+                "transition-property": "width, height, border-width",
                 "transition-duration": 250,
                 opacity: 0.95,
               },
             },
-            {
-              selector: "node:hover",
-              style: {
-                width: 105,
-                height: 105,
-                "border-width": 5,
-                "border-color": isDarkMode ? "#8b5cf6" : "#7c3aed",
-                "background-opacity": 1,
-                opacity: 1,
-                "z-index": 25,
-                "transition-duration": 200,
-              },
-            },
+
             {
               selector: "node:selected",
               style: {
@@ -117,7 +105,7 @@ export const GraphView: React.FC<GraphViewProps> = ({ data }) => {
                 "text-border-color": isDarkMode ? "rgba(55, 65, 81, 0.6)" : "rgba(203, 213, 225, 0.6)",
                 "text-border-opacity": 0.8,
                 opacity: 0.85,
-                "transition-property": "all",
+                "transition-property": "line-color, target-arrow-color, width",
                 "transition-duration": 250,
                 "line-style": "solid",
                 "line-cap": "round",
@@ -135,39 +123,15 @@ export const GraphView: React.FC<GraphViewProps> = ({ data }) => {
                 "z-index": 20,
               },
             },
-            {
-              selector: "edge:hover",
-              style: {
-                width: 5,
-                opacity: 1,
-                "line-color": isDarkMode ? "#a78bfa" : "#4f46e5",
-                "target-arrow-color": isDarkMode ? "#a78bfa" : "#4f46e5",
-                "text-background-opacity": 1,
-                "transition-duration": 150,
-              },
-            },
+
           ],
           layout: {
             name: "concentric",
-            randomize: true,
             animate: true,
             animationDuration: 1500,
             animationEasing: "ease-out",
             fit: true,
-            padding: 60,
-            nodeDimensionsIncludeLabels: true,
-            idealEdgeLength: 200,
-            nodeOverlap: 20,
-            refresh: 30,
-            componentSpacing: 200,
-            nodeRepulsion: 800000,
-            edgeElasticity: 300,
-            nestingFactor: 12,
-            gravity: 25,
-            numIter: 1500,
-            initialTemp: 400,
-            coolingFactor: 0.90,
-            minTemp: 1.0
+            padding: 60
           },
         });
 
@@ -246,14 +210,14 @@ export const GraphView: React.FC<GraphViewProps> = ({ data }) => {
               <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 dark:from-blue-400 dark:via-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
                 Graph Oluşturuluyor
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center justify-center gap-3">
+              <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center justify-center gap-3">
                 <span>Düğümler ve bağlantılar yerleştiriliyor</span>
                 <div className="flex gap-1">
                   <div className="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full animate-bounce"></div>
                   <div className="w-2 h-2 bg-purple-500 dark:bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                   <div className="w-2 h-2 bg-indigo-500 dark:bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                 </div>
-              </p>
+              </div>
             </div>
 
             {/* Progress bar */}

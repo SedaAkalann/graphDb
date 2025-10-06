@@ -11,6 +11,7 @@ export type RFEdgeData = {
   source: string;
   target: string;
   label: string;
+  properties?: Record<string, string | number | boolean>;
 };
 
 export type CytoData = {

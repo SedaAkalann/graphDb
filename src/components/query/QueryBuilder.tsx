@@ -1,8 +1,10 @@
 import React from "react";
 import type { Edge, Node } from "reactflow";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import type { CytoData, RFEdgeData, RFNodeData } from "../../types/types";
+import { ResultsViewer } from "../result/ResultsViewer";
 import { EntitySelector } from "./EntitySelector";
-import { PropertyPanel } from "./PropertyPanel";
+
 import { SchemeCanvas } from "./SchemeCanvas";
 
 interface QueryBuilderProps {
@@ -10,13 +12,9 @@ interface QueryBuilderProps {
   edges: Edge<RFEdgeData>[];
   setNodes: React.Dispatch<React.SetStateAction<Node<RFNodeData>[]>>;
   setEdges: React.Dispatch<React.SetStateAction<Edge<RFEdgeData>[]>>;
-  selectedNode: Node<RFNodeData> | null;
-  setSelectedNode: React.Dispatch<React.SetStateAction<Node<RFNodeData> | null>>;
-  resultLimit: number;
-  setResultLimit: React.Dispatch<React.SetStateAction<number>>;
-  queryDepth: number;
-  setQueryDepth: React.Dispatch<React.SetStateAction<number>>;
   onQuery: (data: CytoData) => void;
+  isLoading: boolean;
+  resultsData: CytoData | null;
 }
 
 export const QueryBuilder: React.FC<QueryBuilderProps> = ({
@@ -24,67 +22,13 @@ export const QueryBuilder: React.FC<QueryBuilderProps> = ({
   edges,
   setNodes,
   setEdges,
-  selectedNode,
-  setSelectedNode,
-  resultLimit,
-  setResultLimit,
-  queryDepth,
-  setQueryDepth,
-  onQuery
+  onQuery,
+  isLoading,
+  resultsData
 }) => {
-  const [isLoading, setIsLoading] = React.useState(false);
 
-  // Filtre fonksiyonu
-  const handleFilter = () => {
-    if (!selectedNode) return;
-    // Burada filtreleme işlemi yapılabilir
-    console.log("Filtreleme yapılıyor:", selectedNode);
-  };
-
-  // Node özelliklerini güncelleme fonksiyonu
-  const handleNodePropertyChange = (key: string, value: string | number | boolean) => {
-    if (!selectedNode) return;
-
-    setNodes((prevNodes) =>
-      prevNodes.map((node) =>
-        node.id === selectedNode.id
-          ? {
-            ...node,
-            data: {
-              ...node.data,
-              properties: {
-                ...node.data.properties,
-                [key]: value,
-              },
-            },
-          }
-          : node
-      )
-    );
-
-    // Seçili node'u da güncelle
-    setSelectedNode((prev) =>
-      prev
-        ? {
-          ...prev,
-          data: {
-            ...prev.data,
-            properties: {
-              ...prev.data.properties,
-              [key]: value,
-            },
-          },
-        }
-        : null
-    );
-  };
-
-  // Sorgula butonuna basınca App'e veri gönder - loading simulation ile
-  const handleQuery = async () => {
-    setIsLoading(true);
-
-    // API çağrısını simüle et
-    await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1500));
+  // Sorgula butonuna basınca App'e veri gönder
+  const handleQuery = () => {
 
     // Entity renkleri (EntitySelector'daki renklerle uyumlu)
     const entityColors = {
@@ -488,13 +432,13 @@ export const QueryBuilder: React.FC<QueryBuilderProps> = ({
       ],
     };
 
-    setIsLoading(false);
     onQuery(cytoData);
     // bu kısım gerçek uygulamada backend'den sonuç verisi çekme işlemi olacak
   };
 
   return (
-    <div className="flex w-full h-full bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900/30 overflow-hidden relative min-h-0 ">
+    <TooltipProvider>
+      <div className="flex w-full h-full bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900/30 overflow-hidden relative min-h-0 ">
       {/* Loading Overlay */}
       {isLoading && (
         <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center ">
@@ -539,35 +483,36 @@ export const QueryBuilder: React.FC<QueryBuilderProps> = ({
         </div>
       )}
 
-      <EntitySelector
-        onClear={() => {
-          setNodes([]);
-          setEdges([]);
-          setSelectedNode(null);
-        }}
-        onLoadSample={() => {
-          // örnek yükle fonksiyonu
-        }}
-      />
-      <SchemeCanvas
-        nodes={nodes}
-        edges={edges}
-        setNodes={setNodes}
-        setEdges={setEdges}
-        onNodeSelect={setSelectedNode}
-        onQuery={handleQuery}
-      />
-      <PropertyPanel
-        selectedNode={selectedNode}
-        onNodePropertyChange={handleNodePropertyChange}
-        resultLimit={resultLimit}
-        setResultLimit={setResultLimit}
-        queryDepth={queryDepth}
-        setQueryDepth={setQueryDepth}
-        onSave={handleFilter}
-        nodes={nodes}
-        edges={edges}
-      />
+      <div className="w-20 flex-shrink-0">
+        <EntitySelector
+          onClear={() => {
+            setNodes([]);
+            setEdges([]);
+          }}
+        />
+      </div>
+      <div className="flex-1 flex min-w-0">
+        {/* Sol Yarı - ReactFlow Schema Canvas */}
+        <div className="w-1/2 border-r border-slate-200/60 dark:border-gray-700/60">
+          <SchemeCanvas
+            nodes={nodes}
+            edges={edges}
+            setNodes={setNodes}
+            setEdges={setEdges}
+            onQuery={handleQuery}
+          />
+        </div>
+
+        {/* Sağ Yarı - Results Viewer */}
+        <div className="w-1/2">
+          <ResultsViewer
+            data={resultsData}
+            isLoading={isLoading}
+          />
+        </div>
+      </div>
+
     </div>
+    </TooltipProvider>
   );
 };

@@ -10,7 +10,7 @@ interface ViewToggleProps {
 
 export const ViewToggle: React.FC<ViewToggleProps> = ({ currentView, onViewChange }) => {
   return (
-    <div className="flex items-center gap-1 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl p-1.5 shadow-lg border border-white/50 dark:border-gray-700/50 ">
+    <div className="flex items-center gap-1 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl p-1.5  shadow-lg border border-white/50 dark:border-gray-700/50 ">
       <button
         onClick={() => onViewChange("graph")}
         className={`
