@@ -1,4 +1,4 @@
-import { BarChart3, Network } from "lucide-react";
+import { BarChart3, Network, Maximize2, Minimize2 } from "lucide-react";
 import React from "react";
 
 export type ViewMode = "graph" | "table";
@@ -6,11 +6,22 @@ export type ViewMode = "graph" | "table";
 interface ViewToggleProps {
   currentView: ViewMode;
   onViewChange: (view: ViewMode) => void;
+  onFullscreen?: () => void;
+  onMinimize?: () => void;
+  showFullscreenButton?: boolean;
+  showMinimizeButton?: boolean;
 }
 
-export const ViewToggle: React.FC<ViewToggleProps> = ({ currentView, onViewChange }) => {
+export const ViewToggle: React.FC<ViewToggleProps> = ({ 
+  currentView, 
+  onViewChange, 
+  onFullscreen,
+  onMinimize,
+  showFullscreenButton = true,
+  showMinimizeButton = false
+}) => {
   return (
-    <div className="flex items-center gap-1 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl p-1.5  shadow-lg border border-white/50 dark:border-gray-700/50 ">
+    <div className="flex items-center gap-1 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl   shadow-lg border border-white/50 dark:border-gray-700/50 ">
       <button
         onClick={() => onViewChange("graph")}
         className={`
@@ -40,6 +51,46 @@ export const ViewToggle: React.FC<ViewToggleProps> = ({ currentView, onViewChang
         <BarChart3 className="w-4 h-4" />
         <span>Tablo</span>
       </button>
+
+      {/* Fullscreen Button */}
+      {showFullscreenButton && onFullscreen && (
+        <>
+          <div className="w-px h-8 bg-slate-200 dark:bg-gray-600 mx-1" />
+          <button
+            onClick={onFullscreen}
+            className="
+              flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm
+              transition-all duration-300 ease-out
+              text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 
+              hover:bg-slate-50/80 dark:hover:bg-gray-700/80 hover:scale-105
+            "
+            title="Tam Ekran"
+          >
+            <Maximize2 className="w-4 h-4" />
+            <span>Genişlet</span>
+          </button>
+        </>
+      )}
+
+      {/* Minimize Button */}
+      {showMinimizeButton && onMinimize && (
+        <>
+          <div className="w-px h-8 bg-slate-200 dark:bg-gray-600 mx-1" />
+          <button
+            onClick={onMinimize}
+            className="
+              flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm
+              transition-all duration-300 ease-out
+              text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 
+              hover:bg-slate-50/80 dark:hover:bg-gray-700/80 hover:scale-105
+            "
+            title="Küçük Ekran"
+          >
+            <Minimize2 className="w-4 h-4" />
+            <span>Daralt</span>
+          </button>
+        </>
+      )}
     </div>
   );
 };

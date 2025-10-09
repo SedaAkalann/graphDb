@@ -3,6 +3,11 @@ import React, { useMemo, useState } from "react";
 import type { CytoData } from "../../types/types";
 import { TableFilter } from "./TableFilter";
 import { TableSearch } from "./TableSearch";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { Card, CardContent } from "../ui/card";
+import { ScrollArea } from "../ui/scroll-area";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
 interface GraphTableProps {
   data: CytoData;
@@ -217,15 +222,17 @@ export const GraphTable: React.FC<GraphTableProps> = ({ data }) => {
   };
 
   const SortButton: React.FC<{ field: SortField; children: React.ReactNode }> = ({ field, children }) => (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={() => handleSort(field)}
-      className="flex items-center gap-1 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+      className="flex items-center gap-1 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors h-auto p-1"
     >
       {children}
       {sortField === field && (
         sortDirection === "asc" ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />
       )}
-    </button>
+    </Button>
   );
 
   return (
@@ -257,54 +264,49 @@ export const GraphTable: React.FC<GraphTableProps> = ({ data }) => {
       </div>
 
       {/* Results Summary */}
-      {/* Stats */}
       <div className="mb-3 flex items-center gap-3">
-        <div className="bg-white/90 backdrop-blur-md rounded-lg px-3 py-1.5 border border-slate-200/60">
-          <span className="text-xs text-slate-600">
-            <span className="font-semibold text-blue-800">{filteredAndSortedNodes.length}</span> düğüm
-            {nodes.length !== filteredAndSortedNodes.length && (
-              <span className="text-slate-500 dark:text-slate-400 ml-1">/ {nodes.length}</span>
-            )}
-          </span>
-        </div>
+        <Badge variant="secondary" className="bg-white/90 backdrop-blur-md border border-slate-200/60">
+          <span className="font-semibold text-blue-800">{filteredAndSortedNodes.length}</span> düğüm
+          {nodes.length !== filteredAndSortedNodes.length && (
+            <span className="text-slate-500 dark:text-slate-400 ml-1">/ {nodes.length}</span>
+          )}
+        </Badge>
 
-        <div className="bg-white/90 backdrop-blur-md rounded-lg px-3 py-1.5 border border-slate-200/60">
-          <span className="text-xs text-slate-600">
-            <span className="font-semibold text-purple-800">{edges.length}</span> bağlantı
-          </span>
-        </div>
+        <Badge variant="secondary" className="bg-white/90 backdrop-blur-md border border-slate-200/60">
+          <span className="font-semibold text-purple-800">{edges.length}</span> bağlantı
+        </Badge>
       </div>
 
       {/* Table */}
-      <div className="flex-1 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl border border-slate-200/50 dark:border-gray-600/50 shadow-lg overflow-hidden flex flex-col">
-        <div className="overflow-auto flex-1">
-          <table className="w-full">
-            <thead className="bg-gradient-to-r from-slate-50 to-blue-50/50 dark:from-gray-700 dark:to-gray-600 border-b border-slate-200/50 dark:border-gray-600/50 sticky top-0 z-10">
-              <tr>
-                <th className="px-4 py-2.5 text-left">
+      <Card className="flex-1 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-slate-200/50 dark:border-gray-600/50 shadow-lg overflow-hidden flex flex-col">
+        <ScrollArea className="flex-1">
+          <Table>
+            <TableHeader className="bg-gradient-to-r from-slate-50 to-blue-50/50 dark:from-gray-700 dark:to-gray-600 border-b border-slate-200/50 dark:border-gray-600/50 sticky top-0 z-10">
+              <TableRow>
+                <TableHead className="px-4 py-2.5">
                   <SortButton field="label">Düğüm</SortButton>
-                </th>
-                <th className="px-4 py-2.5 text-left">
+                </TableHead>
+                <TableHead className="px-4 py-2.5">
                   <SortButton field="type">Tür</SortButton>
-                </th>
-                <th className="px-4 py-2.5 text-left">Özellikler</th>
-                <th className="px-4 py-2.5 text-left">
+                </TableHead>
+                <TableHead className="px-4 py-2.5">Özellikler</TableHead>
+                <TableHead className="px-4 py-2.5">
                   <SortButton field="connections">Bağlantılar</SortButton>
-                </th>
-                <th className="px-6 py-4 text-left">İşlemler</th>
-              </tr>
-            </thead>
-            <tbody>
+                </TableHead>
+                <TableHead className="px-6 py-4">İşlemler</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {filteredAndSortedNodes.map((node, index) => {
                 const isExpanded = expandedRows.has(node.id);
                 return (
                   <React.Fragment key={node.id}>
-                    <tr className={`
+                    <TableRow className={`
                       border-b border-slate-100/60 dark:border-gray-700/60 hover:bg-blue-50/30 dark:hover:bg-gray-700/30 transition-colors
                       ${index % 2 === 0 ? "bg-white/60 dark:bg-gray-800/60" : "bg-slate-50/40 dark:bg-gray-700/40"}
                     `}>
                       {/* Node Info */}
-                      <td className="px-4 py-2.5">
+                      <TableCell className="px-4 py-2.5">
                         <div className="flex items-center gap-2">
                           <div
                             className="w-3 h-3 rounded-full border border-white dark:border-gray-800 shadow-sm"
@@ -312,21 +314,21 @@ export const GraphTable: React.FC<GraphTableProps> = ({ data }) => {
                           />
                           <span className="font-semibold text-slate-800 dark:text-slate-200 text-sm">{node.label}</span>
                         </div>
-                      </td>
+                      </TableCell>
 
                       {/* Type */}
-                      <td className="px-4 py-2.5">
-                        <div className={`
-                          inline-flex items-center gap-1.5 px-2 py-1 rounded-md border text-xs font-medium
-                          ${getTypeColor(node.type)}
-                        `}>
+                      <TableCell className="px-4 py-2.5">
+                        <Badge 
+                          variant="secondary" 
+                          className={`inline-flex items-center gap-1.5 ${getTypeColor(node.type)}`}
+                        >
                           <span className="text-xs">{getTypeIcon(node.type)}</span>
                           <span className="capitalize">{node.type}</span>
-                        </div>
-                      </td>
+                        </Badge>
+                      </TableCell>
 
                       {/* Properties */}
-                      <td className="px-4 py-2.5">
+                      <TableCell className="px-4 py-2.5">
                         <div className="space-y-0.5 max-w-xs">
                           {Object.entries(node.properties).slice(0, 2).map(([key, value]) => (
                             <div key={key} className="text-xs truncate">
@@ -340,86 +342,87 @@ export const GraphTable: React.FC<GraphTableProps> = ({ data }) => {
                             </div>
                           )}
                         </div>
-                      </td>
+                      </TableCell>
 
                       {/* Connections */}
-                      <td className="px-4 py-2.5">
+                      <TableCell className="px-4 py-2.5">
                         <div className="flex items-center gap-1.5">
                           <Network className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                           <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                             {node.connections.length}
                           </span>
                           {node.connections.length > 0 && (
-                            <button
+                            <Button
+                              variant="outline"
+                              size="sm"
                               onClick={() => toggleExpanded(node.id)}
-                              className="text-xs px-2 py-0.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded-md transition-colors ml-1"
+                              className="text-xs px-2 py-0.5 h-auto bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 border-blue-200 dark:border-blue-700 ml-1"
                             >
                               {isExpanded ? "−" : "+"}
-                            </button>
+                            </Button>
                           )}
                         </div>
-                      </td>
+                      </TableCell>
 
                       {/* Actions */}
-                      <td className="px-4 py-2.5">
+                      <TableCell className="px-4 py-2.5">
                         <div className="flex gap-1">
-                          <button className="p-1 text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-all">
+                          <Button variant="ghost" size="sm" className="p-1 h-auto text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400">
                             <ExternalLink className="w-3.5 h-3.5" />
-                          </button>
-                          <button className="p-1 text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-md transition-all">
+                          </Button>
+                          <Button variant="ghost" size="sm" className="p-1 h-auto text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400">
                             <Zap className="w-3.5 h-3.5" />
-                          </button>
+                          </Button>
                         </div>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
 
                     {/* Expanded Row - Connections Detail */}
                     {isExpanded && node.connections.length > 0 && (
-                      <tr className="bg-blue-50/20 dark:bg-gray-700/30 border-l-2 border-blue-400">
-                        <td colSpan={5} className="px-4 py-2">
-                          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg p-3 border border-slate-200/50 dark:border-gray-600/50">
-                            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-1.5">
-                              <Network className="w-3.5 h-3.5" />
-                              Bağlantılar ({node.connections.length})
-                            </h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                              {node.connections.map((conn, idx) => (
-                                <div
-                                  key={idx}
-                                  className="flex items-center gap-2 p-2 bg-slate-50/60 dark:bg-gray-700/60 rounded-md border border-slate-200/40 dark:border-gray-600/40"
-                                >
-                                  <div className={`
-                                    w-1.5 h-1.5 rounded-full
-                                    ${conn.direction === "outgoing" ? "bg-green-500" : "bg-blue-500"}
-                                  `} />
-                                  <div className="flex-1 min-w-0">
-                                    <div className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate">
-                                      {conn.targetLabel}
-                                    </div>
-                                    {conn.edgeLabel && (
-                                      <div className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                                        {conn.edgeLabel}
+                      <TableRow className="bg-blue-50/20 dark:bg-gray-700/30 border-l-2 border-blue-400">
+                        <TableCell colSpan={5} className="px-4 py-2">
+                          <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-slate-200/50 dark:border-gray-600/50">
+                            <CardContent className="p-3">
+                              <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-1.5">
+                                <Network className="w-3.5 h-3.5" />
+                                Bağlantılar ({node.connections.length})
+                              </h4>
+                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                                {node.connections.map((conn, idx) => (
+                                  <Card key={idx} className="flex items-center gap-2 p-2 bg-slate-50/60 dark:bg-gray-700/60 border-slate-200/40 dark:border-gray-600/40">
+                                    <div className={`
+                                      w-1.5 h-1.5 rounded-full
+                                      ${conn.direction === "outgoing" ? "bg-green-500" : "bg-blue-500"}
+                                    `} />
+                                    <div className="flex-1 min-w-0">
+                                      <div className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate">
+                                        {conn.targetLabel}
                                       </div>
-                                    )}
-                                  </div>
-                                  <div className={`
-                                    text-xs px-1.5 py-0.5 rounded text-white font-medium
-                                    ${conn.direction === "outgoing" ? "bg-green-500" : "bg-blue-500"}
-                                  `}>
-                                    {conn.direction === "outgoing" ? "→" : "←"}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
+                                      {conn.edgeLabel && (
+                                        <div className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                                          {conn.edgeLabel}
+                                        </div>
+                                      )}
+                                    </div>
+                                    <Badge 
+                                      variant={conn.direction === "outgoing" ? "success" : "info"}
+                                      className="text-xs px-1.5 py-0.5"
+                                    >
+                                      {conn.direction === "outgoing" ? "→" : "←"}
+                                    </Badge>
+                                  </Card>
+                                ))}
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </TableCell>
+                      </TableRow>
                     )}
                   </React.Fragment>
                 );
               })}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
 
           {filteredAndSortedNodes.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12">
@@ -432,8 +435,8 @@ export const GraphTable: React.FC<GraphTableProps> = ({ data }) => {
               </p>
             </div>
           )}
-        </div>
-      </div>
+        </ScrollArea>
+      </Card>
     </div>
   );
 };

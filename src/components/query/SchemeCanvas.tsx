@@ -1,5 +1,5 @@
-import { Search } from "lucide-react";
-import React, { useCallback, useRef, useState } from "react";
+import { Search, Undo2, Trash2 } from "lucide-react";
+import React, { useCallback, useRef, useState, useMemo } from "react";
 import type { Connection, Edge, Node, ReactFlowInstance } from "reactflow";
 import ReactFlow, {
   Background,
@@ -13,6 +13,14 @@ import { useDarkMode } from "../../contexts/DarkModeContext";
 import type { RFEdgeData, RFNodeData } from "../../types/types";
 import { EdgePropertySheet } from "./EdgePropertySheet";
 import { NodePropertySheet } from "./NodePropertySheet";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { 
+  addNodeToWorkspace, 
+  addEdgeToWorkspace, 
+  setWorkspaceNodes, 
+  setWorkspaceEdges,
+  updateNodeInWorkspace 
+} from "../../store/slices/workspaceSlice";
 
 // Node ve edge types'ları component dışında tanımla
 const nodeTypes = {};
@@ -35,23 +43,23 @@ const defaultNodeStyle: React.CSSProperties = {
   boxShadow: "0 2px 8px 0 rgba(0,0,0,0.07)",
 };
 
-export const SchemeCanvas = ({
-  nodes,
-  edges,
-  setNodes,
-  setEdges,
-  onNodeSelect,
-  onEdgeSelect,
-  onQuery,
-}: {
-  nodes: Node<RFNodeData>[];
-  edges: Edge<RFEdgeData>[];
-  setNodes: React.Dispatch<React.SetStateAction<Node<RFNodeData>[]>>;
-  setEdges: React.Dispatch<React.SetStateAction<Edge<RFEdgeData>[]>>;
+interface SchemeCanvasProps {
   onNodeSelect?: (node: Node<RFNodeData> | null) => void;
   onEdgeSelect?: (edge: Edge<RFEdgeData> | null) => void;
   onQuery: () => void;
+}
+
+export const SchemeCanvas: React.FC<SchemeCanvasProps> = ({
+  onNodeSelect,
+  onEdgeSelect,
+  onQuery,
 }) => {
+  const dispatch = useAppDispatch();
+  const { workspaces, activeWorkspaceId } = useAppSelector((state) => state.workspace);
+  const activeWorkspace = workspaces.find(w => w.id === activeWorkspaceId);
+  
+  const nodes = useMemo(() => activeWorkspace?.nodes || [], [activeWorkspace?.nodes]);
+  const edges = useMemo(() => activeWorkspace?.edges || [], [activeWorkspace?.edges]);
   const { isDarkMode } = useDarkMode();
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] =
@@ -65,64 +73,147 @@ export const SchemeCanvas = ({
   const [isNodePropertySheetOpen, setIsNodePropertySheetOpen] = useState(false);
   const [selectedNodeForSheet, setSelectedNodeForSheet] = useState<Node<RFNodeData> | null>(null);
 
+  // Undo/Redo History Management
+  const [history, setHistory] = useState<{ nodes: Node<RFNodeData>[], edges: Edge<RFEdgeData>[] }[]>([]);
+  const [currentHistoryIndex, setCurrentHistoryIndex] = useState(-1);
+  
+  // Selected items for deletion
+  const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
+  const [selectedEdges, setSelectedEdges] = useState<string[]>([]);
+
+
+
+  // History management
+  const saveToHistory = useCallback(() => {
+    if (!activeWorkspaceId) return;
+    
+    const currentState = { nodes: [...nodes], edges: [...edges] };
+    
+    // İlk state ise direkt ekle
+    if (history.length === 0) {
+      setHistory([currentState]);
+      setCurrentHistoryIndex(0);
+      return;
+    }
+    
+    const newHistory = history.slice(0, currentHistoryIndex + 1);
+    newHistory.push(currentState);
+    
+    // Keep history to max 50 items
+    if (newHistory.length > 50) {
+      newHistory.shift();
+      setCurrentHistoryIndex(newHistory.length - 1);
+    } else {
+      setCurrentHistoryIndex(newHistory.length - 1);
+    }
+    
+    setHistory(newHistory);
+  }, [nodes, edges, history, currentHistoryIndex, activeWorkspaceId]);
+
+  // Undo function
+  const handleUndo = useCallback(() => {
+    if (!activeWorkspaceId || currentHistoryIndex <= 0) return;
+    
+    const previousState = history[currentHistoryIndex - 1];
+    if (previousState) {
+      dispatch(setWorkspaceNodes({ workspaceId: activeWorkspaceId, nodes: previousState.nodes }));
+      dispatch(setWorkspaceEdges({ workspaceId: activeWorkspaceId, edges: previousState.edges }));
+      setCurrentHistoryIndex(currentHistoryIndex - 1);
+    }
+  }, [history, currentHistoryIndex, activeWorkspaceId, dispatch]);
+
+
+
+  // Delete selected items
+  const handleDelete = useCallback(() => {
+    if (!activeWorkspaceId) return;
+    
+    saveToHistory(); // Save current state before deleting
+    
+    // Delete selected nodes and their connected edges
+    const remainingNodes = nodes.filter(node => !selectedNodes.includes(node.id));
+    const remainingEdges = edges.filter(edge => 
+      !selectedEdges.includes(edge.id) && 
+      !selectedNodes.includes(edge.source) && 
+      !selectedNodes.includes(edge.target)
+    );
+    
+    dispatch(setWorkspaceNodes({ workspaceId: activeWorkspaceId, nodes: remainingNodes }));
+    dispatch(setWorkspaceEdges({ workspaceId: activeWorkspaceId, edges: remainingEdges }));
+    
+    // Clear selections
+    setSelectedNodes([]);
+    setSelectedEdges([]);
+  }, [activeWorkspaceId, nodes, edges, selectedNodes, selectedEdges, dispatch, saveToHistory]);
+
+  // Keyboard shortcuts
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey || event.metaKey) {
+        if (event.key === 'z' && !event.shiftKey) {
+          event.preventDefault();
+          handleUndo();
+        }
+      } else if (event.key === 'Delete' || event.key === 'Backspace') {
+        event.preventDefault();
+        handleDelete();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleUndo, handleDelete]);
+
+  // Initialize history with current state
+  React.useEffect(() => {
+    if (activeWorkspaceId && history.length === 0) {
+      const initialState = { nodes: [...nodes], edges: [...edges] };
+      setHistory([initialState]);
+      setCurrentHistoryIndex(0);
+    }
+  }, [activeWorkspaceId, nodes, edges, history.length]);
+
   // Node özellik değişiklik handler'ı
   const handleNodePropertyChange = useCallback((key: string, value: string | number | boolean) => {
     if (!selectedNodeForSheet) return;
 
-    setNodes((prevNodes) =>
-      prevNodes.map((node) => {
-        if (node.id === selectedNodeForSheet.id) {
-          const updatedNode: Node<RFNodeData> = {
-            ...node,
-            data: node.data ? {
-              ...node.data,
-              properties: {
-                ...node.data.properties,
-                [key]: value,
-              },
-            } : {
-              id: node.id,
-              label: 'Node',
-              type: 'default',
-              color: '#3b82f6',
-              properties: { [key]: value },
-            },
-          };
-          return updatedNode;
-        }
-        return node;
-      })
-    );
+    const currentNodeData = selectedNodeForSheet.data || {
+      id: selectedNodeForSheet.id,
+      label: 'Node',
+      type: 'default',
+      color: '#3b82f6',
+      properties: {},
+    };
+
+    const newData = {
+      ...currentNodeData,
+      properties: {
+        ...currentNodeData.properties,
+        [key]: value,
+      },
+    };
+
+    if (activeWorkspaceId) {
+      dispatch(updateNodeInWorkspace({ workspaceId: activeWorkspaceId, nodeId: selectedNodeForSheet.id, data: newData }));
+    }
 
     // Selected node'u da güncelle
     setSelectedNodeForSheet((prev) => {
       if (!prev) return null;
       const updatedPrev: Node<RFNodeData> = {
         ...prev,
-        data: prev.data ? {
-          ...prev.data,
-          properties: {
-            ...prev.data.properties,
-            [key]: value,
-          },
-        } : {
-          id: prev.id,
-          label: 'Node',
-          type: 'default',
-          color: '#3b82f6',
-          properties: { [key]: value },
-        },
+        data: newData,
       };
       return updatedPrev;
     });
-  }, [selectedNodeForSheet, setNodes]);
+  }, [selectedNodeForSheet, dispatch, activeWorkspaceId]);
 
   // Edge özellik değişiklik handler'ı
   const handleEdgePropertyChange = useCallback((key: string, value: string | number | boolean) => {
     if (!selectedEdgeForSheet) return;
 
-    setEdges((prevEdges) =>
-      prevEdges.map((edge) => {
+    if (activeWorkspaceId) {
+      const updatedEdges = edges.map((edge) => {
         if (edge.id === selectedEdgeForSheet.id) {
           const updatedEdge: Edge<RFEdgeData> = {
             ...edge,
@@ -152,8 +243,10 @@ export const SchemeCanvas = ({
           return updatedEdge;
         }
         return edge;
-      })
-    );
+      });
+
+      dispatch(setWorkspaceEdges({ workspaceId: activeWorkspaceId, edges: updatedEdges }));
+    }
 
     // Selected edge'i de güncelle
     setSelectedEdgeForSheet((prev) => {
@@ -177,7 +270,7 @@ export const SchemeCanvas = ({
       };
       return updatedPrev;
     });
-  }, [selectedEdgeForSheet, setEdges]);
+  }, [selectedEdgeForSheet, edges, dispatch, activeWorkspaceId]);
 
 
 
@@ -209,7 +302,10 @@ export const SchemeCanvas = ({
         },
       };
 
-      setNodes((nds) => [...nds, newNode]);
+      if (activeWorkspaceId) {
+        saveToHistory(); // Save state before adding node
+        dispatch(addNodeToWorkspace({ workspaceId: activeWorkspaceId, node: newNode }));
+      }
       onNodeSelect?.(newNode);
       
       // Yeni node bırakıldığında direkt sheet'i aç
@@ -221,7 +317,7 @@ export const SchemeCanvas = ({
         setSelectedEdgeForSheet(null);
       }, 100);
     },
-    [reactFlowInstance, setNodes, onNodeSelect]
+    [reactFlowInstance, dispatch, onNodeSelect, activeWorkspaceId, saveToHistory]
   );
 
   // Sürükleme sırasında görselliği düzgün tut
@@ -272,7 +368,10 @@ export const SchemeCanvas = ({
         },
       };
 
-      setEdges((eds) => [...eds, newEdge]);
+      if (activeWorkspaceId) {
+        saveToHistory(); // Save state before adding edge
+        dispatch(addEdgeToWorkspace({ workspaceId: activeWorkspaceId, edge: newEdge }));
+      }
 
       // Edge'i seç ve sheet'i aç - setTimeout ile state update'i bekle
       setTimeout(() => {
@@ -284,35 +383,56 @@ export const SchemeCanvas = ({
         setIsEdgePropertySheetOpen(true);
       }, 100);
     }
-  }, [setEdges, onEdgeSelect]);
+  }, [dispatch, onEdgeSelect, activeWorkspaceId, saveToHistory]);
 
 
 
   // Node seçimi - Node'a basınca hemen sheet'i aç
   const onNodeClick = useCallback(
-    (_event: React.MouseEvent, node: Node<RFNodeData>) => {
-      // Önce parent'a bildir
-      onNodeSelect?.(node);
-      // Sonra direkt sheet'i aç
-      setSelectedNodeForSheet(node);
-      setIsNodePropertySheetOpen(true);
-      // Edge sheet'ini kapat
-      setIsEdgePropertySheetOpen(false);
-      setSelectedEdgeForSheet(null);
+    (event: React.MouseEvent, node: Node<RFNodeData>) => {
+      // Ctrl/Cmd key ile multi-select
+      if (event.ctrlKey || event.metaKey) {
+        setSelectedNodes(prev => 
+          prev.includes(node.id) 
+            ? prev.filter(id => id !== node.id)
+            : [...prev, node.id]
+        );
+      } else {
+        // Normal click - select only this node for editing
+        onNodeSelect?.(node);
+        setSelectedNodeForSheet(node);
+        setIsNodePropertySheetOpen(true);
+        setIsEdgePropertySheetOpen(false);
+        setSelectedEdgeForSheet(null);
+        
+        // Single selection için
+        setSelectedNodes([node.id]);
+        setSelectedEdges([]);
+      }
     },
     [onNodeSelect]
   );
 
   // Edge seçimi - Edge'e basınca hemen sheet'i aç
   const onEdgeClick = useCallback(
-    (_event: React.MouseEvent, edge: Edge<RFEdgeData>) => {
-      // Önce parent'a bildir
-      if (onEdgeSelect) {
-        onEdgeSelect(edge);
+    (event: React.MouseEvent, edge: Edge<RFEdgeData>) => {
+      // Ctrl/Cmd key ile multi-select
+      if (event.ctrlKey || event.metaKey) {
+        setSelectedEdges(prev => 
+          prev.includes(edge.id) 
+            ? prev.filter(id => id !== edge.id)
+            : [...prev, edge.id]
+        );
+      } else {
+        // Normal click - select only this edge for editing
+        onEdgeSelect?.(edge);
+        setSelectedEdgeForSheet(edge);
+        setIsEdgePropertySheetOpen(true);
+        
+        // Single selection için
+        setSelectedEdges([edge.id]);
+        setSelectedNodes([]);
       }
-      // Sonra direkt sheet'i aç
-      setSelectedEdgeForSheet(edge);
-      setIsEdgePropertySheetOpen(true);
     },
     [onEdgeSelect]
   );
@@ -340,6 +460,90 @@ export const SchemeCanvas = ({
         boxShadow: isDarkMode ? "0 0 24px 0 rgba(0,0,0,0.2)" : "0 0 24px 0 rgba(30,41,59,0.04)",
       }}
     >
+      {/* Action Buttons - Sol Üst */}
+      <div className="absolute top-4 left-4 z-30 flex items-center gap-2">
+        {/* Undo Button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            handleUndo();
+          }}
+          disabled={currentHistoryIndex <= 0}
+          title="Geri Al (Ctrl+Z)"
+          className="
+            h-10 w-10 rounded-xl
+            bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm
+            border border-gray-200/50 dark:border-gray-600/50
+            text-gray-600 dark:text-gray-300
+            hover:text-blue-600 dark:hover:text-blue-400
+            hover:bg-blue-50/50 dark:hover:bg-blue-900/20
+            disabled:opacity-40 disabled:cursor-not-allowed
+            transition-all duration-200
+            flex items-center justify-center
+            shadow-lg hover:shadow-xl
+          "
+        >
+          <Undo2 className="w-4 h-4" />
+        </button>
+
+
+
+        {/* Delete Button with Instructions */}
+        <div className="relative group">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              handleDelete();
+            }}
+            disabled={selectedNodes.length === 0 && selectedEdges.length === 0}
+            className="
+              h-10 w-10 rounded-xl
+              bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm
+              border border-gray-200/50 dark:border-gray-600/50
+              text-gray-600 dark:text-gray-300
+              hover:text-red-600 dark:hover:text-red-400
+              hover:bg-red-50/50 dark:hover:bg-red-900/20
+              disabled:opacity-40 disabled:cursor-not-allowed
+              transition-all duration-200
+              flex items-center justify-center
+              shadow-lg hover:shadow-xl
+            "
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+          
+          {/* Tooltip with Instructions */}
+          <div className="
+            absolute left-12 top-0 z-50
+            bg-gray-900 dark:bg-gray-800 text-white text-xs rounded-lg px-3 py-2
+            opacity-0 group-hover:opacity-100 transition-opacity duration-200
+            pointer-events-none whitespace-nowrap
+            shadow-xl border border-gray-700
+          ">
+            {selectedNodes.length === 0 && selectedEdges.length === 0 ? (
+              <>
+                <div className="font-semibold text-yellow-400">Nasıl Silinir?</div>
+                <div>1. Ctrl+Click ile düğüm/bağlantı seç</div>
+                <div>2. Bu butona tıkla veya Delete tuşu</div>
+              </>
+            ) : (
+              <>
+                <div className="font-semibold text-red-400">Seçili Öğeleri Sil</div>
+                <div>{selectedNodes.length + selectedEdges.length} öğe silinecek</div>
+                <div className="text-gray-400">Delete tuşu da kullanılabilir</div>
+              </>
+            )}
+            {/* Arrow */}
+            <div className="absolute left-[-6px] top-3 w-0 h-0 border-t-[6px] border-b-[6px] border-r-[6px] border-transparent border-r-gray-900 dark:border-r-gray-800"></div>
+          </div>
+        </div>
+
+        {/* Separator */}
+        <div className="w-px h-8 bg-gray-200/50 dark:bg-gray-600/50 mx-1"></div>
+      </div>
+
       {/* Sorgula Butonu - Sağ Üst */}
       <button
         onClick={onQuery}
@@ -362,16 +566,42 @@ export const SchemeCanvas = ({
       </button>
 
       <ReactFlow
-        nodes={nodes}
-        edges={edges}
+        nodes={nodes.map(node => ({
+          ...node,
+          selected: selectedNodes.includes(node.id),
+          style: {
+            ...node.style,
+            ...(selectedNodes.includes(node.id) && {
+              border: '3px solid #ef4444',
+              boxShadow: '0 0 15px rgba(239, 68, 68, 0.5)'
+            })
+          }
+        }))}
+        edges={edges.map(edge => ({
+          ...edge,
+          selected: selectedEdges.includes(edge.id),
+          style: {
+            ...edge.style,
+            ...(selectedEdges.includes(edge.id) && {
+              stroke: '#ef4444',
+              strokeWidth: 4
+            })
+          }
+        }))}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
-        onNodesChange={(changes) =>
-          setNodes((nds) => applyNodeChanges(changes, nds))
-        }
-        onEdgesChange={(changes) =>
-          setEdges((eds) => applyEdgeChanges(changes, eds))
-        }
+        onNodesChange={(changes) => {
+          if (activeWorkspaceId) {
+            const newNodes = applyNodeChanges(changes, nodes);
+            dispatch(setWorkspaceNodes({ workspaceId: activeWorkspaceId, nodes: newNodes }));
+          }
+        }}
+        onEdgesChange={(changes) => {
+          if (activeWorkspaceId) {
+            const newEdges = applyEdgeChanges(changes, edges);
+            dispatch(setWorkspaceEdges({ workspaceId: activeWorkspaceId, edges: newEdges }));
+          }
+        }}
         onConnect={onConnect}
         onInit={setReactFlowInstance}
         onDrop={onDrop}

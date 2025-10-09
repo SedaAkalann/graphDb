@@ -1,31 +1,23 @@
 import React from "react";
-import type { Edge, Node } from "reactflow";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import type { CytoData, RFEdgeData, RFNodeData } from "../../types/types";
+import type { CytoData } from "../../types/types";
 import { ResultsViewer } from "../result/ResultsViewer";
 import { EntitySelector } from "./EntitySelector";
-
 import { SchemeCanvas } from "./SchemeCanvas";
+import { WorkspaceTabs } from "../workspace/WorkspaceTabs";
+import { useAppSelector, useAppDispatch } from "../../store";
+import { clearWorkspace } from "../../store/slices/workspaceSlice";
 
 interface QueryBuilderProps {
-  nodes: Node<RFNodeData>[];
-  edges: Edge<RFEdgeData>[];
-  setNodes: React.Dispatch<React.SetStateAction<Node<RFNodeData>[]>>;
-  setEdges: React.Dispatch<React.SetStateAction<Edge<RFEdgeData>[]>>;
   onQuery: (data: CytoData) => void;
-  isLoading: boolean;
-  resultsData: CytoData | null;
 }
 
 export const QueryBuilder: React.FC<QueryBuilderProps> = ({
-  nodes,
-  edges,
-  setNodes,
-  setEdges,
   onQuery,
-  isLoading,
-  resultsData
 }) => {
+  const dispatch = useAppDispatch();
+  const { cytoData: resultsData, isLoading } = useAppSelector((state) => state.graph);
+  const { activeWorkspaceId } = useAppSelector((state) => state.workspace);
 
   // Sorgula butonuna basınca App'e veri gönder
   const handleQuery = () => {
@@ -486,29 +478,31 @@ export const QueryBuilder: React.FC<QueryBuilderProps> = ({
       <div className="w-20 flex-shrink-0">
         <EntitySelector
           onClear={() => {
-            setNodes([]);
-            setEdges([]);
+            if (activeWorkspaceId) {
+              dispatch(clearWorkspace(activeWorkspaceId));
+            }
           }}
         />
       </div>
-      <div className="flex-1 flex min-w-0">
-        {/* Sol Yarı - ReactFlow Schema Canvas */}
-        <div className="w-1/2 border-r border-slate-200/60 dark:border-gray-700/60">
-          <SchemeCanvas
-            nodes={nodes}
-            edges={edges}
-            setNodes={setNodes}
-            setEdges={setEdges}
-            onQuery={handleQuery}
-          />
-        </div>
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Workspace Tabs */}
+        <WorkspaceTabs />
+        
+        <div className="flex flex-1 min-h-0">
+          {/* Sol Yarı - ReactFlow Schema Canvas */}
+          <div className="w-1/2 border-r border-slate-200/60 dark:border-gray-700/60">
+            <SchemeCanvas
+              onQuery={handleQuery}
+            />
+          </div>
 
-        {/* Sağ Yarı - Results Viewer */}
-        <div className="w-1/2">
-          <ResultsViewer
-            data={resultsData}
-            isLoading={isLoading}
-          />
+          {/* Sağ Yarı - Results Viewer */}
+          <div className="w-1/2">
+            <ResultsViewer
+              data={resultsData}
+              isLoading={isLoading}
+            />
+          </div>
         </div>
       </div>
 

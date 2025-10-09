@@ -7,15 +7,32 @@ import type { CytoData } from "../../types/types";
 
 interface GraphViewProps {
   data: CytoData;
+  containerId?: string;
 }
 
-export const GraphView: React.FC<GraphViewProps> = ({ data }) => {
+export const GraphView: React.FC<GraphViewProps> = ({ data, containerId = "cyto-canvas" }) => {
   const { isDarkMode } = useDarkMode();
   const cyRef = useRef<cytoscape.Core | null>(null);
-  const [isInitializing, setIsInitializing] = React.useState(true);
+  const [isInitializing, setIsInitializing] = React.useState(false);
+  const previousDataRef = useRef<CytoData | null>(null);
+  const isGraphCreatedRef = useRef(false);
 
   useEffect(() => {
     if (!data) return;
+
+    // Data değişmemişse yeniden yükleme yapma
+    const dataChanged = !previousDataRef.current || 
+      JSON.stringify(previousDataRef.current.elements) !== JSON.stringify(data.elements);
+    
+    if (!dataChanged && cyRef.current) {
+      return; // Aynı data, cytoscape zaten var, hiçbir şey yapma
+    }
+
+    // Sadece data değişmişse ve graph daha önce oluşturulmamışsa loading göster
+    if (dataChanged) {
+      setIsInitializing(!isGraphCreatedRef.current); // İlk graph oluşturma için loading göster
+      previousDataRef.current = data;
+    }
 
     // Mevcut cytoscape instance'ını temizle
     if (cyRef.current) {
@@ -25,16 +42,18 @@ export const GraphView: React.FC<GraphViewProps> = ({ data }) => {
     }
 
     // Container'ın hazır olduğundan emin ol
-    const container = document.getElementById("cyto-canvas");
+    const container = document.getElementById(containerId);
     if (!container) return;
 
     // Cytoscape'i başlat
     const initializeCytoscape = () => {
       try {
         setIsInitializing(true);
+        // Redux state'den gelen immutable data'yı deep clone yap
+        const clonedElements = JSON.parse(JSON.stringify(data.elements));
         cyRef.current = cytoscape({
           container: container,
-          elements: data.elements,
+          elements: clonedElements,
           userPanningEnabled: true,
           userZoomingEnabled: true,
           boxSelectionEnabled: false,
@@ -137,19 +156,23 @@ export const GraphView: React.FC<GraphViewProps> = ({ data }) => {
 
         // Layout tamamlandığında loading'i kapat
         cyRef.current.on('layoutstop', () => {
-          setTimeout(() => setIsInitializing(false), 500);
+          setTimeout(() => {
+            setIsInitializing(false);
+            isGraphCreatedRef.current = true; // Graph artık oluşturuldu, bir daha loading gösterme
+          }, 100); // 150ms -> 100ms daha da hızlandırdık
         });
 
       } catch (error) {
         console.error("Cytoscape initialization error:", error);
         setIsInitializing(false);
+        isGraphCreatedRef.current = true; // Error durumunda da bir daha loading gösterme
       }
     };
 
-    // Kısa bir delay ile cytoscape'i başlat
+    // Delay'i daha da kısalt
     const timer = setTimeout(() => {
       initializeCytoscape();
-    }, 100);
+    }, 10); // 50ms -> 10ms
 
     return () => {
       clearTimeout(timer);
@@ -159,7 +182,7 @@ export const GraphView: React.FC<GraphViewProps> = ({ data }) => {
         cyRef.current = null;
       }
     };
-  }, [data, isDarkMode]);
+  }, [data, isDarkMode, containerId]);
 
 
 
@@ -230,7 +253,7 @@ export const GraphView: React.FC<GraphViewProps> = ({ data }) => {
 
       {/* Graph Canvas with Enhanced Styling */}
       <div
-        id="cyto-canvas"
+        id={containerId}
         className="w-full h-full rounded-2xl"
         style={{
           background: isDarkMode

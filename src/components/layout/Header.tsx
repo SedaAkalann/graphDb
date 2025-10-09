@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDarkMode } from '../../contexts/DarkModeContext';
+import { QueryHistory } from '../query/QueryHistory';
 
 // Header Component
 export const Header: React.FC = () => {
@@ -17,8 +18,11 @@ export const Header: React.FC = () => {
             </div>
             <h1 className="text-xl font-bold text-gray-900 dark:text-white">Graph Database UI</h1>
           </div>
-          
+
           <div className="flex items-center space-x-4">
+            {/* Geçmiş Sorgularım Component */}
+            <QueryHistory />
+
             {/* Dark Mode Toggle */}
             <button
               onClick={toggleDarkMode}
@@ -38,17 +42,11 @@ export const Header: React.FC = () => {
                 </svg>
               )}
             </button>
-            
-            {/* <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-              <span>Connected</span>
-            </div>
-            <button className="px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-              Settings
-            </button> */}
           </div>
         </div>
       </div>
     </header>
   );
 };
+
+export default Header;
